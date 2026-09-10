@@ -10,7 +10,7 @@ set -eu
 export ODOO_BOOTSTRAP_MODULES="base,remove_odoo_enterprise,disable_odoo_online,web_responsive,website,website_slides,portal,evolars_email"
 export ODOO_UPGRADE_MODULES="evolars_email"
 
-echo "[initialize-odoo-base] Verificando e garantindo banco $PGDATABASE e permissões..."
+echo "[initialize-odoo-base] Verificando e garantindo role '$PGUSER', banco '$PGDATABASE' e permissões..."
 python3 - <<'PY'
 import os
 import sys
@@ -21,59 +21,83 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 host = os.environ["PGHOST"]
 port = int(os.environ["PGPORT"])
-user = os.environ["PGUSER"]
-password = os.environ["PGPASSWORD"]
+admin_user = os.environ.get("ADMIN_USER", "postgres")
+admin_password = os.environ.get("ADMIN_PASSWORD", os.environ["PGPASSWORD"])
+app_user = os.environ["PGUSER"]
+app_password = os.environ["PGPASSWORD"]
 target_db = os.environ["PGDATABASE"]
 
 # 1. Aguardar Postgres estar online
 connected = False
 for attempt in range(1, 31):
-    try:
-        # Tenta conectar no banco padrão postgres ou railway
-        for default_db in ("postgres", "railway"):
-            try:
-                conn = psycopg2.connect(
-                    host=host, port=port, user=user, password=password, dbname=default_db, connect_timeout=3
-                )
-                conn.close()
-                connected = True
-                admin_db = default_db
-                break
-            except Exception:
-                continue
-        if connected:
+    for default_db in ("postgres", "railway"):
+        try:
+            conn = psycopg2.connect(
+                host=host, port=port, user=admin_user, password=admin_password, dbname=default_db, connect_timeout=3
+            )
+            conn.close()
+            connected = True
+            admin_db = default_db
             break
-    except Exception as e:
-        pass
+        except Exception:
+            continue
+    if connected:
+        break
     time.sleep(1)
 
 if not connected:
     print("[initialize-odoo-base] Erro: Timeout aguardando PostgreSQL.", file=sys.stderr)
     sys.exit(1)
 
-# 2. Conectar e garantir banco target_db
+# 2. Conectar como admin e garantir role app_user
 conn = psycopg2.connect(
-    host=host, port=port, user=user, password=password, dbname=admin_db
+    host=host, port=port, user=admin_user, password=admin_password, dbname=admin_db
 )
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = conn.cursor()
+
+cur.execute("SELECT 1 FROM pg_roles WHERE rolname = %s", (app_user,))
+if not cur.fetchone():
+    print(f"[initialize-odoo-base] Criando role '{app_user}'...")
+    cur.execute(sql.SQL("CREATE ROLE {} WITH LOGIN PASSWORD {} SUPERUSER CREATEDB;").format(
+        sql.Identifier(app_user),
+        sql.Literal(app_password)
+    ))
+else:
+    cur.execute(sql.SQL("ALTER ROLE {} WITH LOGIN PASSWORD {} SUPERUSER CREATEDB;").format(
+        sql.Identifier(app_user),
+        sql.Literal(app_password)
+    ))
+
+# 3. Garantir target_db com owner app_user
 cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (target_db,))
 if not cur.fetchone():
-    print(f"[initialize-odoo-base] Criando banco de dados '{target_db}'...")
-    cur.execute(sql.SQL("CREATE DATABASE {};").format(sql.Identifier(target_db)))
+    print(f"[initialize-odoo-base] Criando banco de dados '{target_db}' com owner '{app_user}'...")
+    cur.execute(sql.SQL("CREATE DATABASE {} OWNER {};").format(
+        sql.Identifier(target_db),
+        sql.Identifier(app_user)
+    ))
+else:
+    cur.execute(sql.SQL("ALTER DATABASE {} OWNER TO {};").format(
+        sql.Identifier(target_db),
+        sql.Identifier(app_user)
+    ))
+
 cur.close()
 conn.close()
 
-# 3. Conectar no target_db e garantir permissões no schema public
+# 4. Conectar no target_db como admin e garantir schema public owner e grants
 conn = psycopg2.connect(
-    host=host, port=port, user=user, password=password, dbname=target_db
+    host=host, port=port, user=admin_user, password=admin_password, dbname=target_db
 )
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = conn.cursor()
-cur.execute(sql.SQL("GRANT ALL ON SCHEMA public TO {};").format(sql.Identifier(user)))
+cur.execute(sql.SQL("ALTER SCHEMA public OWNER TO {};").format(sql.Identifier(app_user)))
+cur.execute(sql.SQL("GRANT ALL ON SCHEMA public TO {};").format(sql.Identifier(app_user)))
 cur.close()
 conn.close()
-print(f"[initialize-odoo-base] Banco '{target_db}' pronto.")
+
+print(f"[initialize-odoo-base] Role '{app_user}' e banco '{target_db}' prontos.")
 PY
 
 configure_settings() {
