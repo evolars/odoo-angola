@@ -10,6 +10,72 @@ set -eu
 export ODOO_BOOTSTRAP_MODULES="base,remove_odoo_enterprise,disable_odoo_online,web_responsive,website,website_slides,portal,evolars_email"
 export ODOO_UPGRADE_MODULES="evolars_email"
 
+echo "[initialize-odoo-base] Verificando e garantindo banco $PGDATABASE e permissões..."
+python3 - <<'PY'
+import os
+import sys
+import time
+import psycopg2
+from psycopg2 import sql
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+host = os.environ["PGHOST"]
+port = int(os.environ["PGPORT"])
+user = os.environ["PGUSER"]
+password = os.environ["PGPASSWORD"]
+target_db = os.environ["PGDATABASE"]
+
+# 1. Aguardar Postgres estar online
+connected = False
+for attempt in range(1, 31):
+    try:
+        # Tenta conectar no banco padrão postgres ou railway
+        for default_db in ("postgres", "railway"):
+            try:
+                conn = psycopg2.connect(
+                    host=host, port=port, user=user, password=password, dbname=default_db, connect_timeout=3
+                )
+                conn.close()
+                connected = True
+                admin_db = default_db
+                break
+            except Exception:
+                continue
+        if connected:
+            break
+    except Exception as e:
+        pass
+    time.sleep(1)
+
+if not connected:
+    print("[initialize-odoo-base] Erro: Timeout aguardando PostgreSQL.", file=sys.stderr)
+    sys.exit(1)
+
+# 2. Conectar e garantir banco target_db
+conn = psycopg2.connect(
+    host=host, port=port, user=user, password=password, dbname=admin_db
+)
+conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+cur = conn.cursor()
+cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (target_db,))
+if not cur.fetchone():
+    print(f"[initialize-odoo-base] Criando banco de dados '{target_db}'...")
+    cur.execute(sql.SQL("CREATE DATABASE {};").format(sql.Identifier(target_db)))
+cur.close()
+conn.close()
+
+# 3. Conectar no target_db e garantir permissões no schema public
+conn = psycopg2.connect(
+    host=host, port=port, user=user, password=password, dbname=target_db
+)
+conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+cur = conn.cursor()
+cur.execute(sql.SQL("GRANT ALL ON SCHEMA public TO {};").format(sql.Identifier(user)))
+cur.close()
+conn.close()
+print(f"[initialize-odoo-base] Banco '{target_db}' pronto.")
+PY
+
 configure_settings() {
   /opt/odoo/common/entrypoint /usr/local/bin/odoo shell --database "$PGDATABASE" <<'PY'
 import os
