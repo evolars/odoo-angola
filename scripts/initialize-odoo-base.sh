@@ -144,7 +144,10 @@ if company:
     logo_path = "/opt/odoo/custom/src/private/evolars_angola_theme/static/src/img/evolars_logo_horizontal_white.png"
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
-            company.logo = base64.b64encode(f.read())
+            logo_data = base64.b64encode(f.read())
+            company.logo = logo_data
+            if company.partner_id:
+                company.partner_id.image_1920 = logo_data
 
 website = env["website"].search([], limit=1)
 if website:
@@ -154,9 +157,23 @@ if website:
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             website.logo = base64.b64encode(f.read())
+    favicon_path = "/opt/odoo/custom/src/private/evolars_angola_theme/static/src/img/evolars-mark.png"
+    if os.path.exists(favicon_path):
+        with open(favicon_path, "rb") as f:
+            website.write({"favicon": base64.b64encode(f.read())})
 
 env["ir.config_parameter"].set_param("web.base.url", "https://angola.evolars.com.br")
 env["ir.config_parameter"].set_param("web.base.url.freeze", "True")
+
+# Prune any orphan attachments whose physical file is missing from filestore
+filestore = f"/var/lib/odoo/filestore/{os.environ['PGDATABASE']}"
+env.cr.execute("SELECT id, store_fname FROM ir_attachment WHERE store_fname IS NOT NULL")
+missing_ids = [
+    aid for aid, fname in env.cr.fetchall()
+    if not os.path.exists(os.path.join(filestore, fname))
+]
+if missing_ids:
+    env.cr.execute("DELETE FROM ir_attachment WHERE id = ANY(%s)", (missing_ids,))
 
 env.cr.commit()
 PY
