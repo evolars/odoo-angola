@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_evolars_email_composer_form" model="ir.ui.view">
+        <field name="name">evolars.email.composer.form</field>
+        <field name="model">evolars.email.composer</field>
+        <field name="arch" type="xml">
+            <form string="Compor e Enviar E-mail (Resend)">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="from_mailbox_id" options="{'no_create': True}"/>
+                            <field name="from_address"/>
+                            <field name="to_partner_ids" widget="many2many_tags" placeholder="Selecione contatos da base..."/>
+                            <field name="to_addresses" placeholder="E-mails avulsos separados por vírgula"/>
+                        </group>
+                        <group>
+                            <field name="cc_addresses" placeholder="E-mails em cópia"/>
+                            <field name="bcc_addresses" placeholder="E-mails em cópia oculta"/>
+                            <field name="reply_to_message_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="subject" placeholder="Assunto do E-mail"/>
+                    </group>
+                    <notebook>
+                        <page string="Mensagem" name="body">
+                            <field name="body_html" widget="html" options="{'collaborative': true}" placeholder="Escreva sua mensagem aqui..."/>
+                        </page>
+                        <page string="Anexos" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_send_email" string="Enviar E-mail" type="object" class="btn-primary" icon="fa-paper-plane"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_evolars_email_composer" model="ir.actions.act_window">
+        <field name="name">Novo E-mail</field>
+        <field name="res_model">evolars.email.composer</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

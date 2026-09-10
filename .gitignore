@@ -1,0 +1,12 @@
+.env
+.env.*
+.docker/
+*.dump
+*.sql
+*.sql.gz
+*.tar.gz
+__pycache__/
+*.pyc
+custom/src/odoo/
+custom/src/server-brand/
+custom/src/web/

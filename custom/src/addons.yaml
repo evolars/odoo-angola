@@ -1,0 +1,7 @@
+server-brand:
+  - remove_odoo_enterprise
+  - disable_odoo_online
+
+web:
+  - web_responsive
+  - web_no_bubble

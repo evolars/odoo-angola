@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_evolars_email_mailbox_user,evolars.email.mailbox.user,model_evolars_email_mailbox,group_evolars_email_user,1,0,0,0
+access_evolars_email_mailbox_manager,evolars.email.mailbox.manager,model_evolars_email_mailbox,group_evolars_email_manager,1,1,1,1
+access_evolars_email_alias_user,evolars.email.alias.user,model_evolars_email_alias,group_evolars_email_user,1,0,0,0
+access_evolars_email_alias_manager,evolars.email.alias.manager,model_evolars_email_alias,group_evolars_email_manager,1,1,1,1
+access_evolars_email_message_user,evolars.email.message.user,model_evolars_email_message,group_evolars_email_user,1,1,1,0
+access_evolars_email_message_manager,evolars.email.message.manager,model_evolars_email_message,group_evolars_email_manager,1,1,1,1
+access_evolars_email_message_portal,evolars.email.message.portal,model_evolars_email_message,base.group_portal,1,1,1,0
+access_evolars_email_composer_user,evolars.email.composer.user,model_evolars_email_composer,group_evolars_email_user,1,1,1,1
+access_evolars_email_composer_manager,evolars.email.composer.manager,model_evolars_email_composer,group_evolars_email_manager,1,1,1,1

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_evolars_email_message_tree" model="ir.ui.view">
+        <field name="name">evolars.email.message.tree</field>
+        <field name="model">evolars.email.message</field>
+        <field name="arch" type="xml">
+            <tree string="Mensagens de E-mail" decoration-bf="not is_read and direction == 'inbound'" decoration-muted="state == 'trash'">
+                <button name="action_toggle_star" type="object" icon="fa-star" title="Favorito" class="text-warning" invisible="not is_starred"/>
+                <button name="action_toggle_star" type="object" icon="fa-star-o" title="Marcar Favorito" invisible="is_starred"/>
+                <field name="from_address" string="De"/>
+                <field name="name" string="Assunto"/>
+                <field name="to_addresses" string="Para"/>
+                <field name="mailbox_id" optional="show"/>
+                <field name="direction" widget="badge" decoration-info="direction == 'inbound'" decoration-success="direction == 'outbound'"/>
+                <field name="state" widget="badge" decoration-success="state == 'sent'" decoration-info="state == 'received'" decoration-danger="state == 'failed'" decoration-muted="state == 'trash'"/>
+                <field name="date" string="Data"/>
+                <field name="is_read" invisible="1"/>
+                <field name="is_starred" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_evolars_email_message_form" model="ir.ui.view">
+        <field name="name">evolars.email.message.form</field>
+        <field name="model">evolars.email.message</field>
+        <field name="arch" type="xml">
+            <form string="Mensagem de E-mail">
+                <header>
+                    <button name="action_reply" string="Responder" type="object" class="btn-primary" icon="fa-reply" invisible="state == 'trash'"/>
+                    <button name="action_mark_read" string="Marcar como Lida" type="object" invisible="is_read or state == 'trash'"/>
+                    <button name="action_mark_unread" string="Marcar como Não Lida" type="object" invisible="not is_read or state == 'trash'"/>
+                    <button name="action_move_trash" string="Mover para Lixeira" type="object" class="btn-outline-danger" invisible="state == 'trash'"/>
+                    <button name="action_restore" string="Restaurar da Lixeira" type="object" class="btn-outline-success" invisible="state != 'trash'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="received,sent,trash"/>
+                </header>
+                <sheet>
+                    <field name="is_read" invisible="1"/>
+                    <field name="error_message" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name" string="Assunto"/>
+                        <h2>
+                            <field name="name" readonly="state != 'draft'"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Remetente &amp; Destinatários">
+                            <field name="from_address" readonly="state != 'draft'"/>
+                            <field name="to_addresses" readonly="state != 'draft'"/>
+                            <field name="cc_addresses" readonly="state != 'draft'" invisible="not cc_addresses"/>
+                            <field name="bcc_addresses" readonly="state != 'draft'" invisible="not bcc_addresses"/>
+                            <field name="reply_to" readonly="state != 'draft'" invisible="not reply_to"/>
+                        </group>
+                        <group string="Metadados &amp; Rastreamento">
+                            <field name="date" readonly="1"/>
+                            <field name="mailbox_id" readonly="state != 'draft'"/>
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="direction" readonly="1"/>
+                            <field name="resend_email_id" readonly="1" invisible="not resend_email_id"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-danger mb-3" role="alert" invisible="not error_message">
+                        <strong>Erro no Envio:</strong> <field name="error_message" readonly="1"/>
+                    </div>
+
+                    <notebook>
+                        <page string="Conteúdo do E-mail" name="body">
+                            <div class="p-3 bg-light rounded border mb-3" style="min-height: 200px;">
+                                <field name="body_html" widget="html" readonly="state != 'draft'"/>
+                            </div>
+                        </page>
+                        <page string="Anexos" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Auditoria de Payload" name="audit" groups="evolars_email.group_evolars_email_manager">
+                            <field name="raw_payload" widget="text" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_evolars_email_message_search" model="ir.ui.view">
+        <field name="name">evolars.email.message.search</field>
+        <field name="model">evolars.email.message</field>
+        <field name="arch" type="xml">
+            <search string="Pesquisar Mensagens">
+                <field name="name" string="Assunto ou Conteúdo" filter_domain="['|', ('name', 'ilike', self), ('body_text', 'ilike', self)]"/>
+                <field name="from_address" string="Remetente"/>
+                <field name="to_addresses" string="Destinatário"/>
+                <field name="mailbox_id" string="Caixa Postal"/>
+                <field name="partner_id" string="Contato"/>
+                <separator/>
+                <filter string="Caixa de Entrada (Recebidos)" name="filter_inbox" domain="[('direction', '=', 'inbound'), ('state', '!=', 'trash')]"/>
+                <filter string="Enviados" name="filter_sent" domain="[('direction', '=', 'outbound'), ('state', '!=', 'trash')]"/>
+                <filter string="Não Lidos" name="filter_unread" domain="[('is_read', '=', False), ('state', '!=', 'trash')]"/>
+                <filter string="Favoritos / Destaques" name="filter_starred" domain="[('is_starred', '=', True)]"/>
+                <filter string="Lixeira" name="filter_trash" domain="[('state', '=', 'trash')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Caixa Postal" name="group_by_mailbox" context="{'group_by': 'mailbox_id'}"/>
+                    <filter string="Direção" name="group_by_direction" context="{'group_by': 'direction'}"/>
+                    <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Data" name="group_by_date" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_evolars_email_message_inbox" model="ir.actions.act_window">
+        <field name="name">Caixa de Entrada</field>
+        <field name="res_model">evolars.email.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('direction', '=', 'inbound'), ('state', '!=', 'trash')]</field>
+        <field name="context">{'default_direction': 'inbound'}</field>
+    </record>
+
+    <record id="action_evolars_email_message_sent" model="ir.actions.act_window">
+        <field name="name">E-mails Enviados</field>
+        <field name="res_model">evolars.email.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('direction', '=', 'outbound'), ('state', '!=', 'trash')]</field>
+        <field name="context">{'default_direction': 'outbound', 'default_state': 'sent'}</field>
+    </record>
+
+    <record id="action_evolars_email_message_trash" model="ir.actions.act_window">
+        <field name="name">Lixeira</field>
+        <field name="res_model">evolars.email.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'trash')]</field>
+    </record>
+
+    <record id="action_evolars_email_message_all" model="ir.actions.act_window">
+        <field name="name">Todas as Mensagens</field>
+        <field name="res_model">evolars.email.message</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

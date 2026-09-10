@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_evolars_email" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.evolars.email</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="70"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="E-mail" string="E-mail" name="evolars_email" groups="evolars_email.group_evolars_email_manager">
+                    <block title="Configurações da API do Resend" id="resend_api_settings">
+                        <setting id="resend_api_key_setting" help="Chave de API de produção para disparo de e-mails">
+                            <field name="resend_api_key" password="True"/>
+                        </setting>
+                        <setting id="resend_domain_setting" help="Domínio do sistema utilizado para envio e recebimento inbound (ex: c-edl.com)">
+                            <field name="resend_domain"/>
+                        </setting>
+                        <setting id="resend_from_setting" help="Endereço e nome de exibição padrão para disparos transacionais">
+                            <field name="resend_default_from"/>
+                        </setting>
+                        <setting id="resend_auto_create_setting" help="Gera e-mail @dominio automaticamente ao cadastrar novos contatos (alunos, professores, pais)">
+                            <field name="resend_auto_create_partner_email"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_evolars_email_config_settings" model="ir.actions.act_window">
+        <field name="name">Configurações de E-mail &amp; Resend</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'evolars_email'}</field>
+    </record>
+</odoo>

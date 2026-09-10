@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu Principal Superior -->
+    <menuitem id="menu_evolars_email_root"
+              name="E-mail"
+              web_icon="evolars_email,static/description/icon.png"
+              groups="evolars_email.group_evolars_email_user"
+              action="action_evolars_email_message_inbox"
+              sequence="20"/>
+
+    <!-- Seção: Caixa de Correio -->
+    <menuitem id="menu_evolars_email_mailbox_section"
+              name="Correspondência"
+              parent="menu_evolars_email_root"
+              sequence="10"/>
+
+    <menuitem id="menu_evolars_email_inbox"
+              name="Caixa de Entrada"
+              parent="menu_evolars_email_mailbox_section"
+              action="action_evolars_email_message_inbox"
+              sequence="1"/>
+
+    <menuitem id="menu_evolars_email_sent"
+              name="Enviados"
+              parent="menu_evolars_email_mailbox_section"
+              action="action_evolars_email_message_sent"
+              sequence="10"/>
+
+    <menuitem id="menu_evolars_email_all"
+              name="Todas as Mensagens"
+              parent="menu_evolars_email_mailbox_section"
+              action="action_evolars_email_message_all"
+              sequence="20"/>
+
+    <menuitem id="menu_evolars_email_trash"
+              name="Lixeira"
+              parent="menu_evolars_email_mailbox_section"
+              action="action_evolars_email_message_trash"
+              sequence="30"/>
+
+    <menuitem id="menu_evolars_email_composer_action"
+              name="Escrever E-mail"
+              parent="menu_evolars_email_mailbox_section"
+              action="action_evolars_email_composer"
+              sequence="40"/>
+
+    <!-- Seção: Administração & Caixas Postais -->
+    <menuitem id="menu_evolars_email_admin_section"
+              name="Gerenciamento"
+              parent="menu_evolars_email_root"
+              groups="evolars_email.group_evolars_email_manager"
+              sequence="20"/>
+
+    <menuitem id="menu_evolars_email_mailboxes"
+              name="Caixas Postais Institucionais"
+              parent="menu_evolars_email_admin_section"
+              action="action_evolars_email_mailbox"
+              sequence="10"/>
+
+    <menuitem id="menu_evolars_email_aliases"
+              name="Aliases de Roteamento"
+              parent="menu_evolars_email_admin_section"
+              action="action_evolars_email_alias"
+              sequence="20"/>
+
+    <menuitem id="menu_evolars_email_sync_action"
+              name="⚡ Sincronizar Todas as Caixas"
+              parent="menu_evolars_email_admin_section"
+              action="action_server_provision_all_mailboxes"
+              sequence="25"/>
+
+    <menuitem id="menu_evolars_email_settings"
+              name="Configurações Resend"
+              parent="menu_evolars_email_admin_section"
+              action="action_evolars_email_config_settings"
+              sequence="30"/>
+</odoo>

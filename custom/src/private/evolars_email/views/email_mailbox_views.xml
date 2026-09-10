@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_evolars_email_mailbox_tree" model="ir.ui.view">
+        <field name="name">evolars.email.mailbox.tree</field>
+        <field name="model">evolars.email.mailbox</field>
+        <field name="arch" type="xml">
+            <tree string="Caixas Postais" decoration-muted="not active">
+                <field name="name"/>
+                <field name="email_address"/>
+                <field name="partner_id"/>
+                <field name="is_shared" widget="boolean_toggle"/>
+                <field name="user_ids" widget="many2many_tags"/>
+                <field name="unread_count"/>
+                <field name="total_count"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_evolars_email_mailbox_form" model="ir.ui.view">
+        <field name="name">evolars.email.mailbox.form</field>
+        <field name="model">evolars.email.mailbox</field>
+        <field name="arch" type="xml">
+            <form string="Caixa Postal Institucional">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_messages" type="object" class="oe_stat_button" icon="fa-envelope">
+                            <field name="total_count" string="Mensagens" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" string="Identificação da Caixa"/>
+                        <h1>
+                            <field name="name" placeholder="ex: Secretaria Escolar / Nome do Professor"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Endereçamento &amp; Domínio">
+                            <field name="email_address" placeholder="ex: secretaria@c-edl.com"/>
+                            <field name="partner_id" placeholder="Contato titular (opcional)"/>
+                            <field name="is_shared"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Permissões &amp; Acesso">
+                            <field name="user_ids" widget="many2many_tags" placeholder="Usuários com permissão para gerenciar/enviar"/>
+                            <field name="unread_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Aliases de E-mail" name="aliases">
+                            <field name="alias_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="alias_address"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_evolars_email_mailbox_kanban" model="ir.ui.view">
+        <field name="name">evolars.email.mailbox.kanban</field>
+        <field name="model">evolars.email.mailbox</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="email_address"/>
+                <field name="is_shared"/>
+                <field name="unread_count"/>
+                <field name="total_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click p-3 shadow-sm rounded border">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="o_kanban_record_title" style="color: #1e3a8a; font-size: 14px;">
+                                    <field name="name"/>
+                                </strong>
+                                <span t-if="record.is_shared.raw_value" class="badge bg-primary">Compartilhada</span>
+                                <span t-else="" class="badge bg-secondary">Pessoal</span>
+                            </div>
+                            <div class="text-muted mb-2" style="font-size: 12px;">
+                                <i class="fa fa-envelope-o me-1"/> <field name="email_address"/>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                <span class="badge bg-light text-dark border">
+                                    <field name="total_count"/> Mensagens
+                                </span>
+                                <span t-if="record.unread_count.raw_value &gt; 0" class="badge bg-danger">
+                                    <field name="unread_count"/> Não lidas
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_evolars_email_mailbox" model="ir.actions.act_window">
+        <field name="name">Caixas Postais Institucionais</field>
+        <field name="res_model">evolars.email.mailbox</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crie a primeira caixa postal institucional ou departamental!
+            </p>
+        </field>
+    </record>
+
+    <!-- Server Action: Provision All Mailboxes -->
+    <record id="action_server_provision_all_mailboxes" model="ir.actions.server">
+        <field name="name">Sincronizar Caixas de Todos os Contatos</field>
+        <field name="model_id" ref="model_evolars_email_mailbox"/>
+        <field name="binding_model_id" ref="model_evolars_email_mailbox"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+action = model.action_provision_all_mailboxes()
+        </field>
+    </record>
+</odoo>

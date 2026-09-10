@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_evolars_email_alias_tree" model="ir.ui.view">
+        <field name="name">evolars.email.alias.tree</field>
+        <field name="model">evolars.email.alias</field>
+        <field name="arch" type="xml">
+            <tree string="Aliases de E-mail" editable="bottom">
+                <field name="name"/>
+                <field name="alias_address"/>
+                <field name="mailbox_id"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_evolars_email_alias" model="ir.actions.act_window">
+        <field name="name">Aliases de Roteamento</field>
+        <field name="res_model">evolars.email.alias</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

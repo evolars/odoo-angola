@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Entrada no Portal Home -->
+    <template id="portal_my_home_evolars_email" name="Portal Home: Meus E-mails" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mensagens &amp; E-mails</t>
+                <t t-set="url" t-value="'/my/emails'"/>
+                <t t-set="placeholder_count" t-value="'email_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Breadcrumbs -->
+    <template id="portal_breadcrumbs_evolars_email" name="Portal Breadcrumbs: E-mails" inherit_id="portal.portal_breadcrumbs" priority="40">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name in ('email_inbox', 'email_detail', 'email_compose')" class="breadcrumb-item">
+                <a t-if="page_name in ('email_detail', 'email_compose')" href="/my/emails">Mensagens &amp; E-mails</a>
+                <t t-else="">Mensagens &amp; E-mails</t>
+            </li>
+            <li t-if="page_name == 'email_detail'" class="breadcrumb-item active">
+                <t t-esc="message.name"/>
+            </li>
+            <li t-if="page_name == 'email_compose'" class="breadcrumb-item active">
+                Novo E-mail
+            </li>
+        </xpath>
+    </template>
+
+    <!-- 1. Lista de E-mails do Portal -->
+    <template id="portal_my_emails_list" name="Minhas Mensagens &amp; E-mails">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h3 class="mb-1 font-weight-bold" style="color: #1e3a8a;">
+                            <i class="fa fa-envelope-open-o me-2"/>Mensagens &amp; E-mail Institucional
+                        </h3>
+                        <p class="text-muted mb-0" style="font-size: 13px;">
+                            <strong>Sua Conta:</strong> <t t-esc="my_mailbox.email_address if my_mailbox else partner.email"/>
+                        </p>
+                    </div>
+                    <div class="mt-3 mt-md-0">
+                        <a href="/my/emails/compose" class="btn btn-primary">
+                            <i class="fa fa-pencil me-1"/> Escrever Novo E-mail
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Filtros e Busca -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
+                    <div class="btn-group mb-2 mb-md-0" role="group">
+                        <a t-attf-href="/my/emails#{keep_query(filterby='')}" t-attf-class="btn btn-sm #{'btn-primary' if not filterby else 'btn-outline-secondary'}">Todas</a>
+                        <a t-attf-href="/my/emails#{keep_query(filterby='inbound')}" t-attf-class="btn btn-sm #{'btn-primary' if filterby == 'inbound' else 'btn-outline-secondary'}">Recebidas</a>
+                        <a t-attf-href="/my/emails#{keep_query(filterby='outbound')}" t-attf-class="btn btn-sm #{'btn-primary' if filterby == 'outbound' else 'btn-outline-secondary'}">Enviadas</a>
+                        <a t-attf-href="/my/emails#{keep_query(filterby='unread')}" t-attf-class="btn btn-sm #{'btn-primary' if filterby == 'unread' else 'btn-outline-secondary'}">Não Lidas</a>
+                    </div>
+                </div>
+
+                <t t-if="not messages">
+                    <div class="alert alert-info shadow-sm">
+                        <i class="fa fa-info-circle me-1"/> Nenhuma mensagem encontrada nesta caixa postal.
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="card shadow-sm border-0" style="border-radius: 10px; overflow: hidden;">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+                                <thead style="background-color: #1e3a8a; color: #ffffff;">
+                                    <tr>
+                                        <th style="width: 25%;">De / Para</th>
+                                        <th>Assunto</th>
+                                        <th style="width: 15%; text-align: center;">Tipo</th>
+                                        <th style="width: 20%; text-align: end;" class="pe-3">Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="messages" t-as="msg">
+                                        <tr t-attf-class="#{'fw-bold table-light' if not msg.is_read and msg.direction == 'inbound' else ''}" style="cursor: pointer;" t-attf-onclick="window.location.href='/my/emails/#{msg.id}'">
+                                            <td>
+                                                <t t-if="msg.direction == 'inbound'">
+                                                    <i class="fa fa-arrow-down text-info me-1" title="Recebido"/>
+                                                    <span t-esc="msg.from_address"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <i class="fa fa-arrow-up text-success me-1" title="Enviado"/>
+                                                    <span t-esc="msg.to_addresses"/>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <span t-esc="msg.name"/>
+                                                <span t-if="msg.attachment_ids" class="badge bg-light text-muted border ms-1">
+                                                    <i class="fa fa-paperclip"/> <t t-esc="len(msg.attachment_ids)"/>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-if="msg.direction == 'inbound'" class="badge bg-info text-dark">Recebido</span>
+                                                <span t-else="" class="badge bg-success">Enviado</span>
+                                            </td>
+                                            <td class="text-end pe-3 text-muted" style="font-size: 12px;">
+                                                <span t-field="msg.date"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div t-if="pager['page_count'] &gt; 1" class="d-flex justify-content-center mt-3">
+                        <t t-call="portal.pager"/>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- 2. Detalhe da Mensagem -->
+    <template id="portal_my_email_detail" name="Leitura de E-mail">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <div class="card shadow-sm border-0 mb-4" style="border-radius: 10px; border-top: 4px solid #1e3a8a !important;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3 pb-3 border-bottom">
+                            <div>
+                                <h4 class="font-weight-bold mb-2" style="color: #1e3a8a;">
+                                    <t t-esc="message.name"/>
+                                </h4>
+                                <div class="text-muted" style="font-size: 13px;">
+                                    <strong>De:</strong> <t t-esc="message.from_address"/><br/>
+                                    <strong>Para:</strong> <t t-esc="message.to_addresses"/><br/>
+                                    <span t-if="message.cc_addresses"><strong>Cc:</strong> <t t-esc="message.cc_addresses"/><br/></span>
+                                    <strong>Data:</strong> <span t-field="message.date"/>
+                                </div>
+                            </div>
+                            <div>
+                                <a t-attf-href="/my/emails/compose?reply_to_id=#{message.id}" class="btn btn-primary">
+                                    <i class="fa fa-reply me-1"/> Responder
+                                </a>
+                                <a href="/my/emails" class="btn btn-outline-secondary ms-1">
+                                    <i class="fa fa-arrow-left me-1"/> Voltar
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Corpo do E-mail -->
+                        <div class="p-3 bg-light rounded mb-4" style="min-height: 250px; font-size: 14px; line-height: 1.6;">
+                            <t t-if="message.body_html">
+                                <t t-out="message.body_html"/>
+                            </t>
+                            <t t-elif="message.body_text">
+                                <p style="white-space: pre-wrap;"><t t-esc="message.body_text"/></p>
+                            </t>
+                            <t t-else="">
+                                <p class="text-muted">Sem conteúdo de texto.</p>
+                            </t>
+                        </div>
+
+                        <!-- Anexos -->
+                        <t t-if="message.attachment_ids">
+                            <h6 class="font-weight-bold mb-2">
+                                <i class="fa fa-paperclip me-1"/> Arquivos Anexados (<t t-esc="len(message.attachment_ids)"/>)
+                            </h6>
+                            <div class="row">
+                                <t t-foreach="message.attachment_ids" t-as="att">
+                                    <div class="col-md-4 mb-2">
+                                        <a t-attf-href="/web/content/#{att.id}?download=true" class="btn btn-sm btn-outline-secondary text-start w-100 text-truncate" target="_blank">
+                                            <i class="fa fa-file me-1"/> <t t-esc="att.name"/>
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- 3. Composição de Novo E-mail -->
+    <template id="portal_my_email_compose" name="Novo E-mail">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <div class="card shadow-sm border-0 mx-auto" style="max-width: 800px; border-radius: 10px; border-top: 5px solid #1e3a8a !important;">
+                    <div class="card-body p-4">
+                        <h4 class="font-weight-bold mb-3" style="color: #1e3a8a;">
+                            <i class="fa fa-pencil me-2"/>Compor Nova Mensagem
+                        </h4>
+
+                        <form action="/my/emails/submit" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            <div class="mb-3">
+                                <label class="form-label font-weight-bold">De (Sua Conta Institucional)</label>
+                                <input type="text" class="form-control" name="from_address" t-att-value="default_from" readonly="readonly" style="background-color: #f8fafc;"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label font-weight-bold">Para (Destinatário)</label>
+                                <input type="email" class="form-control" name="to_address" t-att-value="default_to" required="required" placeholder="ex: secretaria@c-edl.com ou professor@c-edl.com"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label font-weight-bold">Assunto</label>
+                                <input type="text" class="form-control" name="subject" t-att-value="default_subject" required="required" placeholder="Assunto da mensagem..."/>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label font-weight-bold">Mensagem</label>
+                                <textarea class="form-control" name="body" rows="8" required="required" placeholder="Digite sua mensagem com clareza..."><t t-esc="default_body"/></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="/my/emails" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-paper-plane me-1"/> Enviar Mensagem via Resend
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Regras para Mensagens de E-mail -->
+    <record id="rule_evolars_email_message_manager" model="ir.rule">
+        <field name="name">Gestor de E-mails: Acesso Total a Mensagens</field>
+        <field name="model_id" ref="model_evolars_email_message"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_evolars_email_manager'))]"/>
+    </record>
+
+    <record id="rule_evolars_email_message_user" model="ir.rule">
+        <field name="name">Usuário Interno: Mensagens de suas Caixas e Pessoais</field>
+        <field name="model_id" ref="model_evolars_email_message"/>
+        <field name="domain_force">
+            ['|', ('mailbox_id.user_ids', 'in', [user.id]),
+             '|', ('mailbox_id.is_shared', '=', True),
+             '|', ('from_address', '=ilike', user.partner_id.email),
+                  ('to_addresses', 'ilike', user.partner_id.email)]
+        </field>
+        <field name="groups" eval="[(4, ref('group_evolars_email_user'))]"/>
+    </record>
+
+    <record id="rule_evolars_email_message_portal" model="ir.rule">
+        <field name="name">Portal: Mensagens Próprias do Aluno/Família</field>
+        <field name="model_id" ref="model_evolars_email_message"/>
+        <field name="domain_force">
+            ['|', ('partner_id', '=', user.partner_id.id),
+             '|', ('from_address', '=ilike', user.partner_id.email),
+                  ('to_addresses', 'ilike', user.partner_id.email)]
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <!-- Regras para Caixas Postais -->
+    <record id="rule_evolars_email_mailbox_manager" model="ir.rule">
+        <field name="name">Gestor de E-mails: Acesso Total a Caixas Postais</field>
+        <field name="model_id" ref="model_evolars_email_mailbox"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_evolars_email_manager'))]"/>
+    </record>
+
+    <record id="rule_evolars_email_mailbox_user" model="ir.rule">
+        <field name="name">Usuário Interno: Caixas Autorizadas e Compartilhadas</field>
+        <field name="model_id" ref="model_evolars_email_mailbox"/>
+        <field name="domain_force">
+            ['|', ('user_ids', 'in', [user.id]),
+             '|', ('is_shared', '=', True),
+                  ('partner_id', '=', user.partner_id.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('group_evolars_email_user'))]"/>
+    </record>
+</odoo>

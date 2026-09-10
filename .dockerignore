@@ -1,0 +1,9 @@
+.git
+.gitignore
+.env
+.env.*
+*.md
+docs/
+*.dump
+*.sql
+*.sql.gz
