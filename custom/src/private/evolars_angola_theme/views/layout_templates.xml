@@ -2,8 +2,9 @@
 <odoo>
     <template id="evolars_angola_header_footer" inherit_id="website.layout" name="Evolars Angola Layout Header &amp; Footer" priority="50">
         <xpath expr="//header[@id='top']" position="replace">
-            <header id="top" class="evolars-header-angola" data-name="Evolars Header">
+            <header id="top" class="evolars-header-angola o_no_autohide_menu" data-name="Evolars Header">
                 <div class="evolars-header-container">
+                    <ul id="top_menu" class="top_menu d-none"/>
                     <a class="evolars-brand-angola" href="/slides" aria-label="Evolars Angola">
                         <img src="/evolars_angola_theme/static/src/img/evolars_symbol_white.png" alt="Evolars Logo"/>
                         <div class="evolars-brand-title">
@@ -80,7 +81,7 @@
     </template>
 
     <template id="evolars_angola_courses_home_banner" inherit_id="website_slides.courses_home" name="Evolars Angola Hero Banner" priority="50">
-        <xpath expr="//section[contains(@class, 's_banner')]" position="replace">
+        <xpath expr="//section[hasclass('s_banner')]" position="replace">
             <section class="evolars-hero-angola">
                 <div class="evolars-hero-angola-content">
                     <div class="evolars-eyebrow">
