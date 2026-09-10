@@ -3,6 +3,7 @@
     <template id="evolars_angola_header_footer" inherit_id="website.layout" name="Evolars Angola Layout Header &amp; Footer" priority="50">
         <xpath expr="//header[@id='top']" position="replace">
             <header id="top" class="evolars-header-angola o_no_autohide_menu" data-name="Evolars Header">
+                <link type="text/css" rel="stylesheet" href="/evolars_angola_theme/static/src/css/evolars_angola_theme.css"/>
                 <div class="evolars-header-container">
                     <ul id="top_menu" class="top_menu d-none"/>
                     <a class="evolars-brand-angola" href="/slides" aria-label="Evolars Angola">

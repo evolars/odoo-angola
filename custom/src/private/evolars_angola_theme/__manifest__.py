@@ -2,11 +2,11 @@
 {
     "name": "Evolars Angola Theme",
     "summary": "Tema institucional da Evolars para o portal de E-learning em Angola",
-    "version": "17.0.1.0.0",
+    "version": "17.0.1.0.1",
     "license": "LGPL-3",
     "author": "Evolars LTDA",
     "website": "https://evolars.com.br",
-    "category": "Theme/Website",
+    "category": "Website",
     "depends": ["website", "website_slides", "portal"],
     "data": [
         "views/layout_templates.xml",
@@ -14,6 +14,7 @@
     "assets": {
         "web.assets_frontend": [
             "evolars_angola_theme/static/src/scss/evolars_angola_theme.scss",
+            "evolars_angola_theme/static/src/css/evolars_angola_theme.css",
         ],
     },
     "application": True,

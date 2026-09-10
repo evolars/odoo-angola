@@ -171,9 +171,17 @@ env.cr.execute("SELECT id, store_fname FROM ir_attachment WHERE store_fname IS N
 missing_ids = [
     aid for aid, fname in env.cr.fetchall()
     if not os.path.exists(os.path.join(filestore, fname))
-]
 if missing_ids:
     env.cr.execute("DELETE FROM ir_attachment WHERE id = ANY(%s)", (missing_ids,))
+
+# Ensure evolars_angola_theme category is Website (not Theme) to avoid Odoo stripping assets
+theme_mod = env["ir.module.module"].search([("name", "=", "evolars_angola_theme")], limit=1)
+website_cat = env["ir.module.category"].search([("name", "=", "Website"), ("parent_id", "=", False)], limit=1)
+if theme_mod and website_cat:
+    theme_mod.category_id = website_cat
+
+# Clear cached asset bundles so Odoo immediately recompiles web.assets_frontend
+env["ir.attachment"].search([("url", "=like", "/web/assets/%")]).unlink()
 
 env.cr.commit()
 PY
