@@ -7,8 +7,8 @@ set -eu
 : "${PGUSER:?PGUSER is required}"
 : "${PGPASSWORD:?PGPASSWORD is required}"
 
-export ODOO_BOOTSTRAP_MODULES="base,remove_odoo_enterprise,disable_odoo_online,web_responsive,website,website_slides,portal,evolars_email"
-export ODOO_UPGRADE_MODULES="evolars_email"
+export ODOO_BOOTSTRAP_MODULES="base,remove_odoo_enterprise,disable_odoo_online,web_responsive,website,website_slides,portal,evolars_email,evolars_angola_theme"
+export ODOO_UPGRADE_MODULES="evolars_email,evolars_angola_theme"
 
 echo "[initialize-odoo-base] Verificando e garantindo role '$PGUSER', banco '$PGDATABASE' e permissões..."
 python3 - <<'PY'
@@ -103,6 +103,7 @@ PY
 configure_settings() {
   /opt/odoo/common/entrypoint /usr/local/bin/odoo shell --database "$PGDATABASE" <<'PY'
 import os
+import base64
 
 env["ir.config_parameter"].set_param("ribbon.name", False)
 
@@ -134,6 +135,28 @@ else:
         "smtp_user": "resend",
         "smtp_pass": resend_key,
     })
+
+company = env.ref("base.main_company", raise_if_not_found=False)
+if company:
+    company.name = "Evolars Angola"
+    company.website = "https://angola.evolars.com.br"
+    company.email = "angola@evolars.com.br"
+    logo_path = "/opt/odoo/custom/src/private/evolars_angola_theme/static/src/img/evolars_logo_horizontal_white.png"
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            company.logo = base64.b64encode(f.read())
+
+website = env["website"].search([], limit=1)
+if website:
+    website.name = "Evolars Angola"
+    website.domain = "https://angola.evolars.com.br"
+    logo_path = "/opt/odoo/custom/src/private/evolars_angola_theme/static/src/img/evolars_logo_horizontal_white.png"
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            website.logo = base64.b64encode(f.read())
+
+env["ir.config_parameter"].set_param("web.base.url", "https://angola.evolars.com.br")
+env["ir.config_parameter"].set_param("web.base.url.freeze", "True")
 
 env.cr.commit()
 PY
