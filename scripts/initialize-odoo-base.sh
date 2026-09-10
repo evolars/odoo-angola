@@ -171,6 +171,7 @@ env.cr.execute("SELECT id, store_fname FROM ir_attachment WHERE store_fname IS N
 missing_ids = [
     aid for aid, fname in env.cr.fetchall()
     if not os.path.exists(os.path.join(filestore, fname))
+]
 if missing_ids:
     env.cr.execute("DELETE FROM ir_attachment WHERE id = ANY(%s)", (missing_ids,))
 
