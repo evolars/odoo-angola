@@ -152,14 +152,14 @@ else:
 
 company = env.ref("base.main_company", raise_if_not_found=False)
 if company:
-    company.name = "Evolars Angola & Voz no Papel"
+    company.name = "Evolars Angola"
     company.website = "https://angola.evolars.com.br"
     company.email = "angola@evolars.com.br"
     company.phone = "+55 11 93068-0941"
     company.mobile = "+55 11 93068-0941"
     company.vat = "62.014.621/0001-81"
     company.street = "São Paulo - SP / Atendimento Internacional Angola"
-    logo_path = "/opt/odoo/custom/src/branding/logo_voz_no_papel_dark.png"
+    logo_path = "/opt/odoo/custom/src/branding/evolars_logo_horizontal_dark.png"
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             logo_data = base64.b64encode(f.read())
@@ -174,14 +174,14 @@ if company:
 
 website = env["website"].search([], limit=1)
 if website:
-    website.name = "Evolars Angola & Voz no Papel Editorial"
+    website.name = "Evolars Angola"
     website.domain = "https://angola.evolars.com.br"
     website.homepage_url = "/slides"
-    logo_path = "/opt/odoo/custom/src/branding/logo_voz_no_papel_dark.png"
+    logo_path = "/opt/odoo/custom/src/branding/evolars_logo_horizontal_dark.png"
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             website.logo = base64.b64encode(f.read())
-    favicon_path = "/opt/odoo/custom/src/branding/logo_voz_no_papel_icon.png"
+    favicon_path = "/opt/odoo/custom/src/branding/evolars_symbol_dark.png"
     if os.path.exists(favicon_path):
         with open(favicon_path, "rb") as f:
             website.write({"favicon": base64.b64encode(f.read())})
@@ -249,6 +249,28 @@ for name, seq, color in categories:
             "sequence": seq,
             "color": color,
         })
+
+# Unlink previous company / website logo attachments so the new Evolars logo is immediately active
+env["ir.attachment"].search([
+    ("res_model", "in", ["res.company", "website"]),
+    ("res_field", "in", ["logo", "favicon"])
+]).unlink()
+
+# Fix low contrast text colors in course descriptions to comply with WCAG AAA
+env.cr.execute("""
+    UPDATE slide_channel
+    SET description_html = REPLACE(
+        REPLACE(
+            REPLACE(
+                REPLACE(description_html, 'color: #e5e5e5', 'color: #1e293b'),
+                'color: #a3a3a3', 'color: #334155'
+            ),
+            'color: #737373', 'color: #475569'
+        ),
+        'color: #ffffff', 'color: #0f172a'
+    )
+    WHERE description_html IS NOT NULL;
+""")
 
 # Clear cached asset bundles so Odoo immediately recompiles web.assets_frontend
 env["ir.attachment"].search([("url", "=like", "/web/assets/%")]).unlink()
