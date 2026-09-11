@@ -182,6 +182,51 @@ website_cat = env["ir.module.category"].search([("name", "=", "Website"), ("pare
 if theme_mod and website_cat:
     theme_mod.category_id = website_cat
 
+# Guarantee course categories in website_slides
+tag_group = env["slide.channel.tag.group"].search([("name", "=", "Área Técnica")], limit=1)
+if not tag_group:
+    tag_group = env["slide.channel.tag.group"].create({
+        "name": "Área Técnica",
+        "sequence": 1,
+        "is_published": True,
+    })
+else:
+    tag_group.write({
+        "sequence": 1,
+        "is_published": True,
+    })
+
+level_group = env["slide.channel.tag.group"].search([("name", "in", ["O Seu Nível", "Your Level"])], limit=1)
+if level_group:
+    level_group.write({"sequence": 10, "is_published": True})
+
+categories = [
+    ("QA & Automação de Testes", 1, 1),
+    ("Engenharia de Software", 2, 2),
+    ("Cibersegurança", 3, 3),
+    ("Desenvolvimento Backend", 4, 4),
+    ("Desenvolvimento Frontend", 5, 5),
+    ("DevOps & Cloud", 6, 6),
+    ("Dados & Inteligência Artificial", 7, 7),
+    ("Arquitetura de Software", 8, 8),
+    ("Desenvolvimento Mobile", 9, 9),
+]
+
+for name, seq, color in categories:
+    tag = env["slide.channel.tag"].search([("name", "=", name), ("group_id", "=", tag_group.id)], limit=1)
+    if not tag:
+        env["slide.channel.tag"].create({
+            "name": name,
+            "group_id": tag_group.id,
+            "sequence": seq,
+            "color": color,
+        })
+    else:
+        tag.write({
+            "sequence": seq,
+            "color": color,
+        })
+
 # Clear cached asset bundles so Odoo immediately recompiles web.assets_frontend
 env["ir.attachment"].search([("url", "=like", "/web/assets/%")]).unlink()
 

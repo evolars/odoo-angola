@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="slide_channel_tag_group_area" model="slide.channel.tag.group">
+            <field name="name">Área Técnica</field>
+            <field name="sequence">1</field>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="slide_channel_tag_qa" model="slide.channel.tag">
+            <field name="name">QA &amp; Automação de Testes</field>
+            <field name="group_id" ref="slide_channel_tag_group_area"/>
+            <field name="sequence">1</field>
+            <field name="color">1</field>
+        </record>
+
+        <record id="slide_channel_tag_engineer" model="slide.channel.tag">
+            <field name="name">Engenharia de Software</field>
+            <field name="group_id" ref="slide_channel_tag_group_area"/>
+            <field name="sequence">2</field>
+            <field name="color">2</field>
+        </record>
+
+        <record id="slide_channel_tag_cybersecurity" model="slide.channel.tag">
+            <field name="name">Cibersegurança</field>
+            <field name="group_id" ref="slide_channel_tag_group_area"/>
+            <field name="sequence">3</field>
+            <field name="color">3</field>
+        </record>
+
+        <record id="slide_channel_tag_backend" model="slide.channel.tag">
+            <field name="name">Desenvolvimento Backend</field>
+            <field name="group_id" ref="slide_channel_tag_group_area"/>
+            <field name="sequence">4</field>
+            <field name="color">4</field>
+        </record>
+
+        <record id="slide_channel_tag_frontend" model="slide.channel.tag">
+            <field name="name">Desenvolvimento Frontend</field>
+            <field name="group_id" ref="slide_channel_tag_group_area"/>
+            <field name="sequence">5</field>
+            <field name="color">5</field>
+        </record>
+
+        <record id="slide_channel_tag_devops" model="slide.channel.tag">
+            <field name="name">DevOps &amp; Cloud</field>
+            <field name="group_id" ref="slide_channel_tag_group_area"/>
+            <field name="sequence">6</field>
+            <field name="color">6</field>
+        </record>
+
+        <record id="slide_channel_tag_data_ai" model="slide.channel.tag">
+            <field name="name">Dados &amp; Inteligência Artificial</field>
+            <field name="group_id" ref="slide_channel_tag_group_area"/>
+            <field name="sequence">7</field>
+            <field name="color">7</field>
+        </record>
+
+        <record id="slide_channel_tag_architecture" model="slide.channel.tag">
+            <field name="name">Arquitetura de Software</field>
+            <field name="group_id" ref="slide_channel_tag_group_area"/>
+            <field name="sequence">8</field>
+            <field name="color">8</field>
+        </record>
+
+        <record id="slide_channel_tag_mobile" model="slide.channel.tag">
+            <field name="name">Desenvolvimento Mobile</field>
+            <field name="group_id" ref="slide_channel_tag_group_area"/>
+            <field name="sequence">9</field>
+            <field name="color">9</field>
+        </record>
+    </data>
+</odoo>
