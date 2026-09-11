@@ -2,7 +2,7 @@
 {
     "name": "Evolars Angola Offline & PWA",
     "summary": "Suporte a aprendizado offline, download de pacotes ZIP e PWA para economia de dados em Angola",
-    "version": "17.0.1.0.2",
+    "version": "17.0.1.0.3",
     "category": "Website",
     "author": "Evolars LTDA",
     "website": "https://evolars.com.br",
@@ -15,6 +15,9 @@
         "web.assets_frontend": [
             "evolars_offline/static/src/css/evolars_offline.css",
             "evolars_offline/static/src/js/evolars_offline.js",
+        ],
+        "website_slides.slide_embed_assets": [
+            "evolars_offline/static/src/css/evolars_offline.css",
         ],
     },
     "application": False,

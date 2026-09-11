@@ -169,20 +169,25 @@
     color: #334155 !important; /* Slate-700: 9.5:1 on white (AAA requires 7:1) */
 }
 
-.evolars-course-desc p.lead {
+.o_wslides_course_card .card-body .evolars-course-desc p.lead {
     color: #0f172a !important; /* Slate-900: 16.5:1 on white (AAA requires 7:1) */
     font-size: 1.05rem !important;
     line-height: 1.6 !important;
 }
 
-.evolars-course-desc h4 {
+.o_wslides_course_card .card-body .evolars-course-desc h4 {
     color: #0f172a !important;
     font-weight: 700 !important;
 }
 
-.evolars-course-desc ul,
-.evolars-course-desc li {
+.o_wslides_course_card .card-body .evolars-course-desc ul,
+.o_wslides_course_card .card-body .evolars-course-desc li {
     color: #1e293b !important; /* Slate-800: 14:1 on white (AAA requires 7:1) */
+}
+
+.o_wslides_course_card .card-body .evolars-course-desc strong,
+.o_wslides_course_card .card-body .evolars-course-desc b {
+    color: #0f172a !important;
 }
 
 /* Floating WhatsApp CTA */
@@ -229,7 +234,7 @@
    WCAG AAA (Contrast >= 7:1) - PÁGINAS DE CURSOS, LIÇÕES E VISUALIZADOR
    ========================================================================== */
 
-/* 1. Header & Capa de Cursos e Lições */
+/* 1. Header & Capa de Cursos e Lições (Fundo Escuro - WCAG AAA >= 7:1) */
 .o_wslides_course_header,
 .o_wslides_lesson_header,
 .o_wslides_wrap .o_record_cover_container {
@@ -239,10 +244,89 @@
 
 .o_wslides_course_header h1,
 .o_wslides_lesson_header h1,
+.o_wslides_course_header h2,
+.o_wslides_lesson_header h2,
+.o_wslides_course_header h3,
+.o_wslides_lesson_header h3,
+.o_wslides_course_header h4,
+.o_wslides_lesson_header h4,
 .o_wslides_course_header .h4,
 .o_wslides_lesson_header .h4 {
     color: #ffffff !important;
     font-weight: 700 !important;
+}
+
+.o_wslides_course_header p,
+.o_wslides_course_header .lead,
+.o_wslides_course_header p.lead,
+.o_wslides_lesson_header p,
+.o_wslides_lesson_header .lead {
+    color: #f8fafc !important; /* 18:1 no fundo escuro (AAA > 7:1) */
+    font-size: 1.05rem !important;
+    line-height: 1.6 !important;
+}
+
+.o_wslides_course_header strong,
+.o_wslides_course_header b,
+.o_wslides_lesson_header strong,
+.o_wslides_lesson_header b {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.o_wslides_course_header ul,
+.o_wslides_course_header ol,
+.o_wslides_course_header li,
+.o_wslides_lesson_header ul,
+.o_wslides_lesson_header ol,
+.o_wslides_lesson_header li {
+    color: #e2e8f0 !important; /* 14.8:1 (AAA > 7:1) */
+    line-height: 1.6 !important;
+}
+
+.o_wslides_course_header .text-muted,
+.o_wslides_course_header small,
+.o_wslides_lesson_header .text-muted,
+.o_wslides_lesson_header small {
+    color: #cbd5e1 !important; /* 12.3:1 (AAA > 7:1) */
+}
+
+/* Regras Estritas de Contraste para Descrição do Curso no Header Escuro */
+.o_wslides_course_header .evolars-course-desc,
+.o_wslides_course_header .evolars-course-desc p,
+.o_wslides_course_header .evolars-course-desc p.lead {
+    color: #f8fafc !important;
+}
+
+.o_wslides_course_header .evolars-course-desc h4,
+.o_wslides_course_header .evolars-course-desc h5,
+.o_wslides_course_header .evolars-course-desc h6 {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.o_wslides_course_header .evolars-course-desc ul,
+.o_wslides_course_header .evolars-course-desc li {
+    color: #e2e8f0 !important;
+}
+
+.o_wslides_course_header .evolars-course-desc strong,
+.o_wslides_course_header .evolars-course-desc b {
+    color: #ffffff !important;
+}
+
+.o_wslides_course_header .evolars-course-desc > div,
+.o_wslides_course_header .evolars-course-desc div[style*="background"] {
+    background: rgba(15, 23, 42, 0.85) !important;
+    border: 1px solid #334155 !important;
+    border-left: 4px solid #38bdf8 !important;
+    border-radius: 8px !important;
+    padding: 16px 20px !important;
+}
+
+.o_wslides_course_header .evolars-course-desc p:last-child {
+    color: #cbd5e1 !important;
+    font-size: 0.95rem !important;
 }
 
 /* Breadcrumbs (Navegação estrutural) */
@@ -424,6 +508,55 @@
     font-weight: 700 !important;
 }
 
+.badge.text-bg-success,
+.o_wslides_slides_list_slide .badge.text-bg-success {
+    background-color: #15803d !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.badge.text-bg-info,
+.o_wslides_slides_list_slide .badge.text-bg-info {
+    background-color: #0369a1 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.o_wslides_channel_tag {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    font-weight: 600 !important;
+    padding: 4px 10px !important;
+}
+
+/* Abas Principais do Curso (Curso / Avaliações) */
+.o_wslides_nav_tabs {
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+
+.o_wslides_nav_tabs .nav-link {
+    color: #334155 !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    padding: 0.75rem 1.25rem !important;
+    border: none !important;
+    border-bottom: 3px solid transparent !important;
+    background: transparent !important;
+    transition: color 0.15s ease, border-color 0.15s ease !important;
+}
+
+.o_wslides_nav_tabs .nav-link:hover {
+    color: #0f172a !important;
+}
+
+.o_wslides_nav_tabs .nav-link.active {
+    color: #1d4ed8 !important;
+    font-weight: 700 !important;
+    background: transparent !important;
+    border-bottom: 3px solid #1d4ed8 !important;
+}
+
 /* 4. Página de Visualização de Lição (/slides/slide/<id>) */
 .o_wslides_lesson_content h1 {
     color: #0f172a !important;
@@ -542,4 +675,61 @@
 .oe_login_form a:hover {
     text-decoration: underline !important;
     color: #1e40af !important;
+}
+
+/* 6. Visualizador Embutido de Slides (Iframe /slides/embed/<id>) */
+#PDFViewer {
+    background-color: #020617 !important;
+}
+
+#PDFViewerNav {
+    background-color: #0f172a !important;
+    border-top: 1px solid #334155 !important;
+    color: #ffffff !important;
+}
+
+#PDFViewerNav span[role="button"],
+#PDFViewerNav .input-group-text,
+#PDFViewerNav i,
+#PDFViewerNav .fa {
+    color: #f8fafc !important;
+}
+
+#PDFViewerNav span[role="button"]:hover,
+#PDFViewerNav span[role="button"]:hover i {
+    color: #38bdf8 !important;
+}
+
+#PDFViewerNav #page_number {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* 7. Fórum e Formulários Gerais (WCAG AAA) */
+.o_wforum_wrapper .nav-link {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+.o_wforum_wrapper .nav-link i {
+    opacity: 1 !important;
+    color: #1d4ed8 !important;
+}
+
+.s_website_form_label,
+.s_website_form_label_content {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+}
+
+.s_website_form .form-control {
+    border: 1px solid #94a3b8 !important;
+    color: #0f172a !important;
+}
+
+.s_website_form .form-control:focus {
+    border-color: #1d4ed8 !important;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.25) !important;
 }
