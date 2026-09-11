@@ -733,3 +733,39 @@
     border-color: #1d4ed8 !important;
     box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.25) !important;
 }
+
+/* 8. Âncora de Navegação Suave e Botões Globais de Cursos Salvos */
+#channels,
+.o_wslides_channels_anchor {
+    scroll-margin-top: 80px;
+    display: block;
+    position: relative;
+}
+
+.evolars-mobile-header-offline-btn {
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+    color: #ffffff !important;
+    font-size: 12px !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+}
+
+.evolars-mobile-header-offline-btn:hover {
+    background-color: #1e40af !important;
+    border-color: #1e40af !important;
+    color: #ffffff !important;
+}
+
+.evolars-desktop-offline-btn {
+    color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+    font-size: 0.88rem !important;
+}
+
+.evolars-desktop-offline-btn:hover {
+    background-color: #1d4ed8 !important;
+    color: #ffffff !important;
+}
+

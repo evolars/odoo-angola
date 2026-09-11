@@ -11,19 +11,43 @@
         </xpath>
     </template>
 
-    <!-- 2. Status de Conectividade e Link Offline na Navegação Superior -->
+    <!-- 2. Status de Conectividade e Link Offline na Navegação Superior (Desktop) -->
     <template id="evolars_offline_nav_status" inherit_id="portal.placeholder_user_sign_in" name="Evolars Offline Nav Status">
         <xpath expr="." position="inside">
             <li class="nav-item d-flex align-items-center me-2">
-                <a href="/slides/offline" class="nav-link py-1 px-2 d-flex align-items-center text-decoration-none" title="Acessar cursos salvos no aparelho">
-                    <i class="fa fa-folder-open-o text-primary me-1"></i>
-                    <span class="fw-semibold">Cursos Salvos</span>
+                <a href="/slides/offline" class="btn btn-sm btn-outline-primary py-1 px-2 d-flex align-items-center gap-1 fw-bold evolars-desktop-offline-btn" title="Acessar cursos salvos no aparelho (Modo Offline)" style="color: #1d4ed8; border-color: #1d4ed8; font-size: 0.88rem;">
+                    <i class="fa fa-folder-open-o"></i>
+                    <span>Cursos Salvos</span>
                 </a>
                 <span id="evolars-network-status" class="evolars-status-pill evolars-status-online ms-1">
                     <span class="status-dot"></span>
                     <span>Online</span>
                 </span>
             </li>
+        </xpath>
+    </template>
+
+    <!-- 2.1 Botão de Cursos Salvos no Cabeçalho Mobile (Visível em todas as páginas) -->
+    <template id="evolars_mobile_offline_nav_button" inherit_id="website.template_header_mobile" name="Evolars Mobile Header Offline Button">
+        <xpath expr="//ul[contains(@class, 'o_header_mobile_buttons_wrap')]" position="inside">
+            <li class="nav-item d-flex align-items-center">
+                <a href="/slides/offline" class="btn btn-sm evolars-mobile-header-offline-btn d-flex align-items-center gap-1 py-1 px-2 fw-bold text-white shadow-sm" style="background-color: #1d4ed8; border-color: #1d4ed8; font-size: 12px; border-radius: 6px;" title="Cursos Salvos no Aparelho">
+                    <i class="fa fa-folder-open-o"></i>
+                    <span>Salvos</span>
+                </a>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- 2.2 Botão de Cursos Salvos na Barra do Curso (Desktop e Mobile) -->
+    <template id="evolars_course_nav_offline_btn" inherit_id="website_slides.course_nav" name="Evolars Course Nav Offline Link">
+        <xpath expr="//div[contains(@class, 'col-md-4') and contains(@class, 'd-none')]" position="before">
+            <div class="col-auto d-none d-md-flex align-items-center">
+                <a href="/slides/offline" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1 fw-semibold text-white" style="border-color: rgba(255,255,255,0.4);" title="Acessar cursos salvos no aparelho">
+                    <i class="fa fa-folder-open-o"></i>
+                    <span>Cursos Salvos</span>
+                </a>
+            </div>
         </xpath>
     </template>
 
@@ -172,6 +196,7 @@
                     </div>
                 </div>
             </section>
+            <div id="channels" class="o_wslides_channels_anchor" style="scroll-margin-top: 80px;"></div>
         </xpath>
     </template>
 
@@ -315,15 +340,30 @@
             <div id="wrap" class="container py-5">
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
                     <div>
-                        <h2 class="mb-1 font-weight-bold" style="color: #0f172a;">Meus Cursos Salvos (Modo Offline)</h2>
-                        <p class="mb-0" style="color: #334155; font-size: 1rem;">
-                            Cursos armazenados na memória do seu aparelho para estudo sem consumo de dados móveis.
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h2 class="mb-0 font-weight-bold" style="color: #0f172a;">Meus Cursos Salvos</h2>
+                            <span class="badge" style="background-color: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; font-weight: 700;">Modo Offline</span>
+                        </div>
+                        <p class="mb-0" style="color: #334155; font-size: 0.95rem;">
+                            Cursos e apostilas salvos na memória do seu aparelho para estudo com zero consumo de internet móvel em Angola.
                         </p>
                     </div>
                     <div class="mt-3 mt-md-0 d-flex align-items-center gap-2">
                         <a href="/slides/all" class="btn btn-primary btn-sm fw-semibold" style="background-color: #2563eb; border-color: #2563eb; color: #ffffff;">
-                            <i class="fa fa-book me-1"></i> Ver Catálogo Completo
+                            <i class="fa fa-book me-1"></i> Explorar Catálogo
                         </a>
+                    </div>
+                </div>
+
+                <!-- Campo de Pesquisa Rápida nos Cursos Salvos -->
+                <div class="row mb-4">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0" style="color: #64748b;">
+                                <i class="fa fa-search"></i>
+                            </span>
+                            <input type="text" id="evolars-offline-search" class="form-control border-start-0" placeholder="Pesquisar nos seus cursos salvos..." oninput="window.evolarsFilterOfflineCourses &amp;&amp; window.evolarsFilterOfflineCourses(this.value)" style="color: #0f172a; font-weight: 500;"/>
+                        </div>
                     </div>
                 </div>
 

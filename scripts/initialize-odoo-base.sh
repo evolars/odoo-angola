@@ -262,6 +262,19 @@ for ch in env["slide.channel"].search([]):
         if new_desc != ch.description_html:
             ch.description_html = new_desc
 
+# Guarantee website.menu entry for /slides/offline
+offline_menu = env["website.menu"].search([("url", "=", "/slides/offline")], limit=1)
+if not offline_menu:
+    website_rec = env["website"].search([], limit=1)
+    if website_rec and website_rec.menu_id:
+        env["website.menu"].create({
+            "name": "Cursos Salvos",
+            "url": "/slides/offline",
+            "parent_id": website_rec.menu_id.id,
+            "sequence": 55,
+            "website_id": website_rec.id,
+        })
+
 # Clear cached asset bundles so Odoo immediately recompiles web.assets_frontend
 env["ir.attachment"].search([("url", "=like", "/web/assets/%")]).unlink()
 
