@@ -9,4 +9,4 @@ exec setpriv \
   --reuid=1000 \
   --regid=1000 \
   --init-groups \
-  /opt/odoo/common/entrypoint "$@"
+  /opt/odoo/common/entrypoint "$@" 2>&1

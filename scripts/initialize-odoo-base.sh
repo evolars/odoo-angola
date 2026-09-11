@@ -97,6 +97,7 @@ cur.execute(sql.SQL("GRANT ALL ON SCHEMA public TO {};").format(sql.Identifier(a
 
 cur.execute("SELECT to_regclass('public.ir_module_module') IS NOT NULL")
 if cur.fetchone()[0]:
+    cur.execute("DELETE FROM ir_model_data WHERE module = 'evolars_email' AND name LIKE 'param_resend_%'")
     cur.execute("SELECT 1 FROM ir_module_module WHERE name = 'evolars_angola_theme'")
     if cur.fetchone():
         print("[initialize-odoo-base] Removendo evolars_angola_theme do banco para restaurar tema padrão...")
@@ -125,6 +126,7 @@ resend_key = os.environ.get("RESEND_API_KEY", "re_SJSa1EET_CuE1AeGwemKSMXsDUrZdz
 
 env["ir.config_parameter"].set_param("resend.domain", domain)
 env["ir.config_parameter"].set_param("resend.default_from", default_from)
+env["ir.config_parameter"].set_param("resend.auto_create_partner_email", "True")
 env["ir.config_parameter"].set_param("evolars_email.resend_api_key", resend_key)
 env["ir.config_parameter"].set_param("evolars_email.default_from_email", default_from)
 
@@ -294,7 +296,7 @@ if [ "$bootstrap_state" = "initialized" ]; then
     /usr/local/bin/odoo \
     --database "$PGDATABASE" \
     --update "$ODOO_UPGRADE_MODULES" \
-    --stop-after-init || true
+    --stop-after-init 2>&1 || true
   configure_settings
   exit 0
 fi

@@ -26,7 +26,6 @@ Módulo Odoo Genérico e Reutilizável para Gestão de E-mails com Resend:
         'security/groups.xml',
         'security/ir.model.access.csv',
         'security/ir_rules.xml',
-        'data/res_config_settings_data.xml',
         'views/email_mailbox_views.xml',
         'views/email_alias_views.xml',
         'views/email_message_views.xml',
