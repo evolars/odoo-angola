@@ -257,20 +257,17 @@ env["ir.attachment"].search([
 ]).unlink()
 
 # Fix low contrast text colors in course descriptions to comply with WCAG AAA
-env.cr.execute("""
-    UPDATE slide_channel
-    SET description_html = REPLACE(
-        REPLACE(
-            REPLACE(
-                REPLACE(description_html, 'color: #e5e5e5', 'color: #1e293b'),
-                'color: #a3a3a3', 'color: #334155'
-            ),
-            'color: #737373', 'color: #475569'
-        ),
-        'color: #ffffff', 'color: #0f172a'
-    )
-    WHERE description_html IS NOT NULL;
-""")
+for ch in env["slide.channel"].search([]):
+    if ch.description_html and "color:" in ch.description_html:
+        new_desc = (
+            ch.description_html
+            .replace("color: #e5e5e5", "color: #1e293b")
+            .replace("color: #a3a3a3", "color: #334155")
+            .replace("color: #737373", "color: #475569")
+            .replace("color: #ffffff", "color: #0f172a")
+        )
+        if new_desc != ch.description_html:
+            ch.description_html = new_desc
 
 # Clear cached asset bundles so Odoo immediately recompiles web.assets_frontend
 env["ir.attachment"].search([("url", "=like", "/web/assets/%")]).unlink()
