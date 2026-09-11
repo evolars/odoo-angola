@@ -2,7 +2,7 @@
 {
     "name": "Evolars Angola Theme",
     "summary": "Tema institucional da Evolars para o portal de E-learning em Angola",
-    "version": "17.0.1.0.1",
+    "version": "17.0.1.0.2",
     "license": "LGPL-3",
     "author": "Evolars LTDA",
     "website": "https://evolars.com.br",

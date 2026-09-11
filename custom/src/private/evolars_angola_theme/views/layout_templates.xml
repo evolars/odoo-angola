@@ -79,6 +79,21 @@
                 </div>
             </footer>
         </xpath>
+
+        <xpath expr="//script[@id='tracking_code_config']" position="replace">
+            <script id="tracking_code_config">
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('consent', 'default', {
+                    'ad_storage': 'granted',
+                    'ad_user_data': 'granted',
+                    'ad_personalization': 'granted',
+                    'analytics_storage': 'granted',
+                });
+                gtag('js', new Date());
+                gtag('config', '<t t-esc="website.google_analytics_key"/>');
+            </script>
+        </xpath>
     </template>
 
     <template id="evolars_angola_courses_home_banner" inherit_id="website_slides.courses_home" name="Evolars Angola Hero Banner" priority="50">

@@ -161,6 +161,7 @@ if website:
     if os.path.exists(favicon_path):
         with open(favicon_path, "rb") as f:
             website.write({"favicon": base64.b64encode(f.read())})
+    website.cookies_bar = False
 
 env["ir.config_parameter"].set_param("web.base.url", "https://angola.evolars.com.br")
 env["ir.config_parameter"].set_param("web.base.url.freeze", "True")
