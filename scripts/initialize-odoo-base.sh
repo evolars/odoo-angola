@@ -7,8 +7,8 @@ set -eu
 : "${PGUSER:?PGUSER is required}"
 : "${PGPASSWORD:?PGPASSWORD is required}"
 
-export ODOO_BOOTSTRAP_MODULES="base,remove_odoo_enterprise,disable_odoo_online,web_responsive,website,website_slides,portal,evolars_email,evolars_angola_theme"
-export ODOO_UPGRADE_MODULES="evolars_email,evolars_angola_theme"
+export ODOO_BOOTSTRAP_MODULES="base,remove_odoo_enterprise,disable_odoo_online,web_responsive,website,website_slides,portal,evolars_email"
+export ODOO_UPGRADE_MODULES="evolars_email"
 
 echo "[initialize-odoo-base] Verificando e garantindo role '$PGUSER', banco '$PGDATABASE' e permissões..."
 python3 - <<'PY'
@@ -94,6 +94,18 @@ conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = conn.cursor()
 cur.execute(sql.SQL("ALTER SCHEMA public OWNER TO {};").format(sql.Identifier(app_user)))
 cur.execute(sql.SQL("GRANT ALL ON SCHEMA public TO {};").format(sql.Identifier(app_user)))
+
+cur.execute("SELECT to_regclass('public.ir_module_module') IS NOT NULL")
+if cur.fetchone()[0]:
+    cur.execute("SELECT 1 FROM ir_module_module WHERE name = 'evolars_angola_theme'")
+    if cur.fetchone():
+        print("[initialize-odoo-base] Removendo evolars_angola_theme do banco para restaurar tema padrão...")
+        cur.execute("UPDATE ir_module_module SET state = 'uninstalled' WHERE name = 'evolars_angola_theme'")
+        cur.execute("DELETE FROM ir_ui_view WHERE key LIKE 'evolars_angola_theme.%'")
+        cur.execute("DELETE FROM ir_asset WHERE path LIKE '%evolars_angola_theme%'")
+        cur.execute("DELETE FROM ir_model_data WHERE module = 'evolars_angola_theme'")
+        cur.execute("DELETE FROM ir_attachment WHERE url LIKE '/web/assets/%'")
+
 cur.close()
 conn.close()
 
@@ -141,7 +153,7 @@ if company:
     company.name = "Evolars Angola"
     company.website = "https://angola.evolars.com.br"
     company.email = "angola@evolars.com.br"
-    logo_path = "/opt/odoo/custom/src/private/evolars_angola_theme/static/src/img/evolars_logo_horizontal_white.png"
+    logo_path = "/opt/odoo/custom/src/branding/evolars_logo_horizontal_dark.png"
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             logo_data = base64.b64encode(f.read())
@@ -153,11 +165,12 @@ website = env["website"].search([], limit=1)
 if website:
     website.name = "Evolars Angola"
     website.domain = "https://angola.evolars.com.br"
-    logo_path = "/opt/odoo/custom/src/private/evolars_angola_theme/static/src/img/evolars_logo_horizontal_white.png"
+    website.homepage_url = "/slides"
+    logo_path = "/opt/odoo/custom/src/branding/evolars_logo_horizontal_dark.png"
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             website.logo = base64.b64encode(f.read())
-    favicon_path = "/opt/odoo/custom/src/private/evolars_angola_theme/static/src/img/evolars-mark.png"
+    favicon_path = "/opt/odoo/custom/src/branding/evolars-mark.png"
     if os.path.exists(favicon_path):
         with open(favicon_path, "rb") as f:
             website.write({"favicon": base64.b64encode(f.read())})
@@ -175,12 +188,6 @@ missing_ids = [
 ]
 if missing_ids:
     env.cr.execute("DELETE FROM ir_attachment WHERE id = ANY(%s)", (missing_ids,))
-
-# Ensure evolars_angola_theme category is Website (not Theme) to avoid Odoo stripping assets
-theme_mod = env["ir.module.module"].search([("name", "=", "evolars_angola_theme")], limit=1)
-website_cat = env["ir.module.category"].search([("name", "=", "Website"), ("parent_id", "=", False)], limit=1)
-if theme_mod and website_cat:
-    theme_mod.category_id = website_cat
 
 # Guarantee course categories in website_slides
 tag_group = env["slide.channel.tag.group"].search([("name", "=", "Área Técnica")], limit=1)
