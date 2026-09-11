@@ -15,6 +15,28 @@ def slugify_filename(name):
     return clean[:60] or 'material'
 
 
+def get_slide_pdf_bytes(slide):
+    if slide.binary_content:
+        raw = slide.binary_content
+        if isinstance(raw, str):
+            return base64.b64decode(raw)
+        elif isinstance(raw, bytes):
+            try:
+                return base64.b64decode(raw)
+            except Exception:
+                return raw
+    att = request.env['ir.attachment'].sudo().search([
+        ('res_model', '=', 'slide.slide'),
+        ('res_id', '=', slide.id),
+        ('res_field', '=', 'binary_content'),
+    ], limit=1)
+    if att and att.raw:
+        return att.raw
+    if att and att.datas:
+        return base64.b64decode(att.datas)
+    return None
+
+
 class EvolarsOfflineController(http.Controller):
 
     @http.route(['/sw.js'], type='http', auth='public', website=False, sitemap=False)
@@ -60,15 +82,24 @@ class EvolarsOfflineController(http.Controller):
 
     @http.route('/slides/channel/<int:channel_id>/download_package', type='http', auth='public', website=True)
     def download_channel_package(self, channel_id, **kw):
+        if request.env.user._is_public():
+            return request.redirect(f'/web/login?redirect=/slides/channel/{channel_id}/download_package')
+
         channel = request.env['slide.channel'].sudo().browse(channel_id)
         if not channel.exists() or not channel.is_published:
             return request.not_found()
 
         slides = channel.slide_ids.filtered(
-            lambda s: s.slide_category == 'document' and s.is_published and s.binary_content
+            lambda s: s.slide_category == 'document' and s.is_published
         ).sorted(lambda s: s.sequence)
 
-        if not slides:
+        valid_slides = []
+        for s in slides:
+            pdf_data = get_slide_pdf_bytes(s)
+            if pdf_data:
+                valid_slides.append((s, pdf_data))
+
+        if not valid_slides:
             return request.make_response(
                 "Nenhum material em PDF disponível para download neste curso.",
                 headers=[('Content-Type', 'text/plain; charset=utf-8')]
@@ -84,13 +115,12 @@ PLATAFORMA: Evolars Angola (https://angola.evolars.com.br)
 Este pacote contém todas as apostilas e materiais em PDF do curso,
 otimizado para estudo offline sem consumo contínuo de dados móveis.
 
-Materiais inclusos ({len(slides)} lições):
+Materiais inclusos ({len(valid_slides)} lições):
 """
-            for idx, slide in enumerate(slides, start=1):
+            for idx, (slide, pdf_data) in enumerate(valid_slides, start=1):
                 safe_title = slugify_filename(slide.name)
                 fname = f"{idx:02d}_{safe_title}.pdf"
                 readme_text += f"\n  {idx:02d}. {slide.name} ({fname})"
-                pdf_data = base64.b64decode(slide.binary_content)
                 zf.writestr(f"{slugify_filename(channel.name)}/{fname}", pdf_data)
 
             readme_text += "\n\nBons estudos! Evolars Angola — Capacitação Tecnológica Aberta.\n"
@@ -105,36 +135,45 @@ Materiais inclusos ({len(slides)} lições):
                 ('Content-Type', 'application/zip'),
                 ('Content-Disposition', f'attachment; filename="{zip_filename}"'),
                 ('Content-Length', str(len(zip_bytes))),
-                ('Cache-Control', 'public, max-age=3600'),
+                ('Cache-Control', 'private, max-age=1800'),
             ]
         )
 
     @http.route('/slides/channel/<int:channel_id>/offline_manifest', type='json', auth='public')
     def channel_offline_manifest(self, channel_id, **kw):
+        if request.env.user._is_public():
+            return {
+                'error': 'login_required',
+                'message': 'Inicie sessão ou crie uma conta para salvar cursos no aparelho.',
+                'redirect': f'/web/login?redirect=/slides/{channel_id}',
+            }
+
         channel = request.env['slide.channel'].sudo().browse(channel_id)
         if not channel.exists() or not channel.is_published:
             return {'error': 'Curso não encontrado'}
 
         slides = channel.slide_ids.filtered(
-            lambda s: s.slide_category == 'document' and s.is_published and s.binary_content
+            lambda s: s.slide_category == 'document' and s.is_published
         ).sorted(lambda s: s.sequence)
+
+        manifest_slides = []
+        for s in slides:
+            manifest_slides.append({
+                'id': s.id,
+                'name': s.name,
+                'sequence': s.sequence,
+                'is_preview': s.is_preview,
+                'pdf_url': f'/slides/slide/{s.id}/pdf_content',
+            })
 
         return {
             'id': channel.id,
             'name': channel.name,
             'description': channel.description or '',
-            'total_slides': len(slides),
+            'total_slides': len(manifest_slides),
             'cover_url': f'/web/image/slide.channel/{channel.id}/image_512' if channel.image_1920 else False,
             'package_url': f'/slides/channel/{channel.id}/download_package',
-            'slides': [
-                {
-                    'id': s.id,
-                    'name': s.name,
-                    'sequence': s.sequence,
-                    'is_preview': s.is_preview,
-                    'pdf_url': f'/web/content/slide.slide/{s.id}/binary_content/{slugify_filename(s.name)}.pdf',
-                } for s in slides
-            ]
+            'slides': manifest_slides,
         }
 
     @http.route('/slides/sync_progress', type='json', auth='public', methods=['POST'])

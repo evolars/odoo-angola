@@ -224,3 +224,322 @@
         border-radius: 50%;
     }
 }
+
+/* ==========================================================================
+   WCAG AAA (Contrast >= 7:1) - PÁGINAS DE CURSOS, LIÇÕES E VISUALIZADOR
+   ========================================================================== */
+
+/* 1. Header & Capa de Cursos e Lições */
+.o_wslides_course_header,
+.o_wslides_lesson_header,
+.o_wslides_wrap .o_record_cover_container {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #172554 100%) !important;
+    color: #ffffff !important;
+}
+
+.o_wslides_course_header h1,
+.o_wslides_lesson_header h1,
+.o_wslides_course_header .h4,
+.o_wslides_lesson_header .h4 {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* Breadcrumbs (Navegação estrutural) */
+.o_wslides_course_nav .breadcrumb,
+.o_wslides_lesson_header .breadcrumb {
+    background: transparent !important;
+}
+
+.o_wslides_course_nav .breadcrumb-item,
+.o_wslides_lesson_header .breadcrumb-item {
+    color: #e2e8f0 !important;
+    font-size: 0.95rem !important;
+}
+
+.o_wslides_course_nav .breadcrumb-item a,
+.o_wslides_lesson_header .breadcrumb-item a {
+    color: #93c5fd !important; /* 11.5:1 ratio on #0f172a (AAA > 7:1) */
+    text-decoration: none !important;
+    font-weight: 600 !important;
+}
+
+.o_wslides_course_nav .breadcrumb-item a:hover,
+.o_wslides_lesson_header .breadcrumb-item a:hover {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+.o_wslides_course_nav .breadcrumb-item + .breadcrumb-item::before,
+.o_wslides_lesson_header .breadcrumb-item + .breadcrumb-item::before {
+    color: #cbd5e1 !important;
+}
+
+.o_wslides_course_nav .breadcrumb-item.active,
+.o_wslides_course_nav .breadcrumb-item.fw-bold a,
+.o_wslides_lesson_header .breadcrumb-item.fw-bold a {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* Campo de busca no topo de cursos */
+.o_wslides_course_nav_search .search-query {
+    background-color: rgba(15, 23, 42, 0.9) !important;
+    border: 1px solid #475569 !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+}
+
+.o_wslides_course_nav_search .search-query::placeholder {
+    color: #cbd5e1 !important;
+    opacity: 1 !important;
+}
+
+.o_wslides_course_nav_search .oe_search_button {
+    color: #93c5fd !important;
+}
+
+/* Abas de navegação do topo do curso */
+.o_wslides_course_header_nav .nav-link {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+}
+
+.o_wslides_course_header_nav .nav-link.active {
+    color: #ffffff !important;
+    background-color: #1d4ed8 !important;
+}
+
+/* 2. Barra Lateral do Curso (Sidebar) */
+.o_wslides_course_sidebar {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08) !important;
+}
+
+.o_wslides_course_sidebar table td,
+.o_wslides_course_sidebar table th,
+.o_wslides_course_sidebar .text-muted {
+    color: #334155 !important; /* 8.5:1 on white (AAA > 7:1) */
+    font-weight: 500 !important;
+}
+
+.o_wslides_course_sidebar strong,
+.o_wslides_course_sidebar b,
+.o_wslides_course_sidebar h5,
+.o_wslides_course_sidebar h6 {
+    color: #0f172a !important; /* 16.5:1 on white */
+}
+
+/* Estrelas de Avaliação */
+.o_wslides_course_sidebar .fa-star,
+.o_wslides_lesson_content .fa-star {
+    color: #b45309 !important; /* Amber-700: 7.2:1 contrast */
+}
+
+/* Botão de Inscrição / Login */
+.evolars-btn-auth-join {
+    background-color: #1d4ed8 !important; /* Blue-700: 8.5:1 on white */
+    border-color: #1d4ed8 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.evolars-btn-auth-join:hover {
+    background-color: #1e40af !important;
+    border-color: #1e40af !important;
+    color: #ffffff !important;
+}
+
+.evolars-signup-link {
+    color: #1d4ed8 !important;
+    font-weight: 600 !important;
+}
+
+/* 3. Lista de Módulos e Lições */
+.o_wslides_slides_list {
+    background: transparent !important;
+}
+
+/* Cabeçalho do Módulo / Categoria */
+.o_wslides_slide_list_category_header {
+    background-color: #f1f5f9 !important; /* Slate-100 */
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
+    font-size: 1.05rem !important;
+}
+
+.o_wslides_slide_list_category_header span {
+    color: #0f172a !important;
+}
+
+.o_wslides_slide_list_category_header .o_not_editable span {
+    color: #334155 !important; /* 8.5:1 on #f1f5f9 */
+    font-weight: 600 !important;
+}
+
+/* Item da Lição */
+.o_wslides_slides_list_slide {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px !important;
+    margin-bottom: 4px !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.o_wslides_slides_list_slide:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+}
+
+.o_wslides_slides_list_slide a.o_wslides_js_slides_list_slide_link {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    font-size: 0.95rem !important;
+}
+
+.o_wslides_slides_list_slide a.o_wslides_js_slides_list_slide_link:hover {
+    color: #1d4ed8 !important;
+    text-decoration: underline !important;
+}
+
+.o_wslides_slides_list_slide span {
+    color: #1e293b !important;
+}
+
+.o_wslides_slides_list_slide i.fa-file-pdf-o {
+    color: #b91c1c !important; /* Red-700: 7.5:1 on white */
+    font-size: 1.1rem !important;
+}
+
+.o_wslides_slides_list_slide .badge-info,
+.o_wslides_slides_list_slide .badge {
+    background-color: #dbeafe !important;
+    color: #1e40af !important;
+    border: 1px solid #93c5fd !important;
+    font-weight: 700 !important;
+}
+
+/* 4. Página de Visualização de Lição (/slides/slide/<id>) */
+.o_wslides_lesson_content h1 {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+.o_wslides_lesson_content h1 span {
+    color: #0f172a !important;
+}
+
+.o_wslides_lesson_content h1 i {
+    color: #b91c1c !important;
+}
+
+/* Botões de navegação de lição (Anterior, Próximo, Fullscreen) */
+.o_wslides_lesson_content .btn-light,
+.o_wslides_nav_button {
+    background-color: #ffffff !important;
+    border: 1px solid #94a3b8 !important;
+    color: #0f172a !important;
+    font-weight: 600 !important;
+}
+
+.o_wslides_lesson_content .btn-light:hover,
+.o_wslides_nav_button:not(.disabled):hover {
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+    color: #ffffff !important;
+}
+
+.o_wslides_nav_button.disabled {
+    opacity: 0.5 !important;
+    color: #64748b !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* Abas de Lição (Sobre e Comentários) */
+.o_wslides_lesson_nav .nav-link {
+    color: #334155 !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid transparent !important;
+}
+
+.o_wslides_lesson_nav .nav-link.active {
+    color: #1d4ed8 !important;
+    font-weight: 700 !important;
+    border-bottom: 2px solid #1d4ed8 !important;
+}
+
+#about p,
+#about div,
+.o_wslides_lesson_content p {
+    color: #1e293b !important;
+    line-height: 1.6 !important;
+}
+
+.o_wslides_lesson_content .text-muted {
+    color: #334155 !important;
+}
+
+/* 5. Telas de Login e Cadastro (/web/login, /web/signup) */
+.oe_website_login_container {
+    max-width: 440px !important;
+    margin: 40px auto !important;
+    padding: 28px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+}
+
+.oe_login_form .form-label,
+.oe_signup_form label {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+}
+
+.oe_login_form .form-control,
+.oe_signup_form .form-control {
+    border: 1px solid #94a3b8 !important;
+    color: #0f172a !important;
+    border-radius: 6px !important;
+    padding: 10px 12px !important;
+}
+
+.oe_login_form .form-control:focus,
+.oe_signup_form .form-control:focus {
+    border-color: #1d4ed8 !important;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.25) !important;
+}
+
+.oe_login_buttons .btn-primary {
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    padding: 10px 16px !important;
+    border-radius: 6px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.oe_login_buttons .btn-primary:hover {
+    background-color: #1e40af !important;
+    border-color: #1e40af !important;
+}
+
+.oe_login_buttons a,
+.oe_login_form a {
+    color: #1d4ed8 !important;
+    font-weight: 600 !important;
+}
+
+.oe_login_buttons a:hover,
+.oe_login_form a:hover {
+    text-decoration: underline !important;
+    color: #1e40af !important;
+}

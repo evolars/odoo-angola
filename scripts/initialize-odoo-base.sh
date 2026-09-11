@@ -195,15 +195,8 @@ if website:
 env["ir.config_parameter"].set_param("web.base.url", "https://angola.evolars.com.br")
 env["ir.config_parameter"].set_param("web.base.url.freeze", "True")
 
-# Prune any orphan attachments whose physical file is missing from filestore
-filestore = f"/var/lib/odoo/filestore/{os.environ['PGDATABASE']}"
-env.cr.execute("SELECT id, store_fname FROM ir_attachment WHERE store_fname IS NOT NULL")
-missing_ids = [
-    aid for aid, fname in env.cr.fetchall()
-    if not os.path.exists(os.path.join(filestore, fname))
-]
-if missing_ids:
-    env.cr.execute("DELETE FROM ir_attachment WHERE id = ANY(%s)", (missing_ids,))
+# Configure open signup for student registration
+env["ir.config_parameter"].set_param("auth_signup.invitation_scope", "b2c")
 
 # Guarantee course categories in website_slides
 tag_group = env["slide.channel.tag.group"].search([("name", "=", "Área Técnica")], limit=1)

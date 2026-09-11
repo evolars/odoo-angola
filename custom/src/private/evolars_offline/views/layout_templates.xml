@@ -27,25 +27,77 @@
         </xpath>
     </template>
 
-    <!-- 3. Botões de Ação Offline na Barra Lateral do Curso -->
+    <!-- 3. Exigência de Login / Conta Cadastrada para Participação no Curso -->
+    <template id="evolars_course_join_login_prompt" inherit_id="website_slides.course_join" name="Evolars Course Join Login Prompt">
+        <xpath expr="//div[contains(@class, 'o_wslides_js_course_join')]" position="replace">
+            <div class="o_wslides_js_course_join flex-grow-1 d-grid">
+                <t t-if="env.user._is_public()">
+                    <a role="button" class="btn btn-primary btn-block fw-bold shadow-sm py-2 evolars-btn-auth-join"
+                       t-attf-href="/web/login?redirect=#{request.httprequest.path}"
+                       title="Iniciar Sessão ou Criar Conta para participar deste curso"
+                       style="background-color: #1d4ed8; border-color: #1d4ed8; color: #ffffff !important; font-size: 0.95rem;">
+                        <i class="fa fa-sign-in me-1"></i>
+                        <span>Iniciar Sessão para Participar</span>
+                    </a>
+                    <a t-attf-href="/web/signup?redirect=#{request.httprequest.path}"
+                       class="small text-center mt-2 fw-semibold evolars-signup-link"
+                       style="color: #1d4ed8 !important; text-decoration: underline;">
+                        Não tem conta? Cadastre-se grátis
+                    </a>
+                </t>
+                <t t-elif="not channel.is_member">
+                    <a role="button" class="btn btn-primary btn-block o_wslides_js_course_join_link fw-bold py-2"
+                       title="Inscrever-se no Curso" aria-label="Inscrever-se no Curso" href="#"
+                       t-att-data-channel-id="channel.id"
+                       t-att-data-channel-enroll="channel.enroll"
+                       style="background-color: #1d4ed8; border-color: #1d4ed8; color: #ffffff !important;">
+                        <i class="fa fa-graduation-cap me-1"></i>
+                        <span class="cta-title">Inscrever-se no Curso</span>
+                    </a>
+                </t>
+                <t t-else="">
+                    <div class="alert alert-success py-2 px-3 mb-0 text-center fw-bold small rounded-3"
+                         style="background-color: #dcfce7; color: #14532d; border: 1px solid #86efac;">
+                        <i class="fa fa-check-circle me-1"></i> Você está inscrito neste curso
+                    </div>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- 3.1 Botões de Ação Offline na Barra Lateral do Curso -->
     <template id="evolars_offline_course_sidebar_actions" inherit_id="website_slides.course_sidebar" name="Evolars Offline Sidebar Actions">
         <xpath expr="//div[contains(@class, 'o_wslides_course_sidebar')]" position="inside">
             <div class="mt-3 pt-3 border-top evolars-offline-actions-container">
                 <div class="d-grid gap-2">
-                    <button type="button"
-                            t-att-data-channel-id="channel.id"
-                            onclick="evolarsDownloadCourseOffline(this.dataset.channelId, this)"
-                            class="btn btn-outline-primary btn-sm evolars-btn-download-offline fw-semibold">
-                        <i class="fa fa-download me-1"></i> Estudar Offline (Salvar no Aparelho)
-                    </button>
-                    <a t-attf-href="/slides/channel/#{channel.id}/download_package"
-                       class="btn btn-outline-secondary btn-sm evolars-btn-download-zip fw-semibold"
-                       title="Baixar todas as apostilas em um único arquivo .ZIP para pendrive ou compartilhamento">
-                        <i class="fa fa-file-archive-o me-1"></i> Baixar Pacote Completo (.ZIP)
-                    </a>
+                    <t t-if="env.user._is_public()">
+                        <a t-attf-href="/web/login?redirect=#{request.httprequest.path}"
+                           class="btn btn-outline-primary btn-sm evolars-btn-download-offline fw-semibold"
+                           title="Inicie sessão para salvar este curso offline no aparelho">
+                            <i class="fa fa-download me-1"></i> Estudar Offline (Salvar no Aparelho)
+                        </a>
+                        <a t-attf-href="/web/login?redirect=/slides/channel/#{channel.id}/download_package"
+                           class="btn btn-outline-secondary btn-sm evolars-btn-download-zip fw-semibold"
+                           title="Inicie sessão para baixar o pacote de apostilas .ZIP">
+                            <i class="fa fa-file-archive-o me-1"></i> Baixar Pacote Completo (.ZIP)
+                        </a>
+                    </t>
+                    <t t-else="">
+                        <button type="button"
+                                t-att-data-channel-id="channel.id"
+                                onclick="evolarsDownloadCourseOffline(this.dataset.channelId, this)"
+                                class="btn btn-outline-primary btn-sm evolars-btn-download-offline fw-semibold">
+                            <i class="fa fa-download me-1"></i> Estudar Offline (Salvar no Aparelho)
+                        </button>
+                        <a t-attf-href="/slides/channel/#{channel.id}/download_package"
+                           class="btn btn-outline-secondary btn-sm evolars-btn-download-zip fw-semibold"
+                           title="Baixar todas as apostilas em um único arquivo .ZIP para pendrive ou compartilhamento">
+                            <i class="fa fa-file-archive-o me-1"></i> Baixar Pacote Completo (.ZIP)
+                        </a>
+                    </t>
                 </div>
-                <div class="small text-center mt-1" style="font-size: 11px; color: #475569;">
-                    <i class="fa fa-bolt text-warning me-1"></i> Economize sua internet móvel
+                <div class="small text-center mt-1" style="font-size: 11px; color: #334155;">
+                    <i class="fa fa-bolt text-warning me-1"></i> Economize sua internet móvel em Angola
                 </div>
             </div>
         </xpath>

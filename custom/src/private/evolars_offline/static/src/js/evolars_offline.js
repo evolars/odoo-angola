@@ -138,8 +138,13 @@
       const resJson = await resp.json();
       const manifest = resJson.result;
 
+      if (manifest && manifest.error === 'login_required') {
+        window.location.href = manifest.redirect || `/web/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+        return;
+      }
+
       if (!manifest || !manifest.slides) {
-        throw new Error('Não foi possível obter os materiais do curso.');
+        throw new Error(manifest?.error || 'Não foi possível obter os materiais do curso.');
       }
 
       const total = manifest.slides.length;
