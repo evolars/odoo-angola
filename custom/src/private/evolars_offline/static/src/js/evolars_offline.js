@@ -251,82 +251,46 @@
       };
 
       tx.oncomplete = () => {
+        const statusBadge = document.getElementById(`course-status-${channelId}`);
+        const saveBtn = document.getElementById(`save-btn-${channelId}`);
+        if (statusBadge) {
+          statusBadge.className = 'badge evolars-status-tag';
+          statusBadge.style.cssText = 'background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 600;';
+          statusBadge.innerHTML = '<i class="fa fa-cloud me-1"></i>Catálogo Online';
+        }
+        if (saveBtn) {
+          saveBtn.className = 'btn btn-outline-primary btn-sm evolars-action-save-btn';
+          saveBtn.title = 'Salvar no aparelho para estudo offline';
+          saveBtn.innerHTML = '<i class="fa fa-download"></i>';
+          saveBtn.onclick = function () { window.evolarsDownloadCourseOffline(channelId, this); };
+        }
         alert('Curso removido da memória do aparelho com sucesso.');
-        renderOfflineLibrary();
       };
     } catch (err) {
       console.error('[Evolars Offline] Erro ao remover curso:', err);
     }
   };
 
-  // 7. Expansão/Visualização das Apostilas do Curso Salvo
-  window.evolarsToggleCourseSlides = async function (channelId) {
+  // 7. Expansão/Visualização das Lições do Curso
+  window.evolarsToggleCourseSlides = function (channelId) {
     channelId = parseInt(channelId, 10);
     const target = document.getElementById(`offline-slides-list-${channelId}`);
-    if (!target) return;
-
-    if (!target.classList.contains('d-none')) {
-      target.classList.add('d-none');
-      return;
-    }
-
-    target.classList.remove('d-none');
-    target.innerHTML = '<div class="py-2 text-center text-muted small"><span class="fa fa-spinner fa-spin me-1"></span> Carregando apostilas salvas...</div>';
-
-    try {
-      const db = await openDB();
-      const tx = db.transaction('slides', 'readonly');
-      const store = tx.objectStore('slides');
-      const allReq = store.getAll();
-
-      allReq.onsuccess = () => {
-        const allSlides = allReq.result || [];
-        const slides = allSlides.filter((s) => parseInt(s.channel_id, 10) === channelId);
-        if (!slides.length) {
-          target.innerHTML = '<div class="text-muted small py-2 text-center">Nenhuma apostila individual vinculada a este curso no aparelho.</div>';
-          return;
-        }
-
-        slides.sort((a, b) => (a.sequence || 0) - (b.sequence || 0));
-        let html = '<ul class="list-group list-group-flush mt-2">';
-        for (const s of slides) {
-          html += `
-            <li class="list-group-item d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center py-2 px-0 bg-transparent gap-2">
-              <div class="d-flex align-items-center text-break me-2" style="max-width: 72%;">
-                <i class="fa fa-file-pdf-o text-danger me-2" style="font-size: 1.1rem;"></i>
-                <span class="fw-semibold" style="color: #0f172a; font-size: 0.9rem;">${s.name}</span>
-              </div>
-              <div class="d-flex gap-1 flex-shrink-0 align-self-end align-self-sm-center">
-                <a href="${s.pdf_url}" target="_blank" class="btn btn-sm btn-primary py-1 px-2 fw-bold" style="background-color: #1d4ed8; border-color: #1d4ed8; font-size: 12px;">
-                  <i class="fa fa-book me-1"></i> Ler PDF
-                </a>
-                <button type="button" class="btn btn-sm btn-outline-success py-1 px-2" style="font-size: 12px;" onclick="window.evolarsMarkSlideCompleted(${s.id})" title="Marcar como concluída">
-                  <i class="fa fa-check"></i>
-                </button>
-              </div>
-            </li>
-          `;
-        }
-        html += '</ul>';
-        target.innerHTML = html;
-      };
-      allReq.onerror = () => {
-        target.innerHTML = '<div class="text-danger small py-2">Erro ao ler apostilas salvas.</div>';
-      };
-    } catch (err) {
-      target.innerHTML = '<div class="text-danger small py-2">Falha ao acessar armazenamento offline.</div>';
+    if (target) {
+      target.classList.toggle('d-none');
     }
   };
 
-  // 8. Pesquisa e Filtro em Tempo Real de Cursos Salvos
+  // 8. Pesquisa e Filtro em Tempo Real
   window.evolarsFilterOfflineCourses = function (query) {
     const term = (query || '').toLowerCase().trim();
     const items = document.querySelectorAll('.evolars-offline-item');
     let visibleCount = 0;
+
     items.forEach((item) => {
       const card = item.querySelector('.evolars-offline-course-card');
       const title = (card ? card.getAttribute('data-course-name') : '') || '';
-      if (!term || title.toLowerCase().includes(term)) {
+      const text = item.textContent || '';
+      if (!term || title.toLowerCase().includes(term) || text.toLowerCase().includes(term)) {
         item.classList.remove('d-none');
         visibleCount++;
       } else {
@@ -341,15 +305,15 @@
         noResultsEl = document.createElement('div');
         noResultsEl.id = 'evolars-offline-search-no-results';
         noResultsEl.className = 'col-12 text-center py-4';
-        noResultsEl.innerHTML = `<p class="text-muted mb-0">Nenhum curso salvo encontrado para "<strong>${query}</strong>".</p>`;
-        container.appendChild(noResultsEl);
+        noResultsEl.innerHTML = `<p class="text-muted mb-0">Nenhum curso ou lição encontrada para "<strong>${query}</strong>".</p>`;
+        if (container) container.appendChild(noResultsEl);
       }
     } else if (noResultsEl) {
       noResultsEl.remove();
     }
   };
 
-  // 9. Renderização da Biblioteca Offline em /slides/offline
+  // 9. Sincronização dos Cursos Salvos no Aparelho
   async function renderOfflineLibrary() {
     const container = document.getElementById('evolars-offline-library-list');
     if (!container) return;
@@ -357,7 +321,7 @@
     try {
       const db = await openDB();
       const tx = db.transaction('courses', 'readonly');
-      const courses = await new Promise((resolve) => {
+      const savedCourses = await new Promise((resolve) => {
         const timer = setTimeout(() => resolve([]), 2000);
         const req = tx.objectStore('courses').getAll();
         req.onsuccess = () => {
@@ -370,84 +334,232 @@
         };
       });
 
-      if (courses.length === 0) {
-        container.innerHTML = `
-          <div class="col-12 text-center py-5">
-            <div class="mb-3"><span class="fa fa-folder-open-o fa-3x text-muted"></span></div>
-            <h4 class="fw-bold" style="color: #0f172a;">Nenhum curso salvo offline ainda</h4>
-            <p class="max-w-md mx-auto mb-4" style="color: #334155; font-size: 0.95rem; max-width: 500px;">
-              Você pode salvar cursos completos com todas as apostilas em PDF direto no seu aparelho para estudar sem internet móvel.
-            </p>
-            <div class="p-3 rounded-3 mb-4 mx-auto text-start" style="background-color: #f8fafc; border: 1px solid #e2e8f0; max-width: 480px;">
-              <div class="fw-bold mb-2" style="color: #0f172a; font-size: 0.9rem;"><i class="fa fa-info-circle text-primary me-1"></i> Como salvar um curso:</div>
-              <ol class="mb-0 ps-3 small" style="color: #334155; line-height: 1.6;">
-                <li>Navegue até qualquer curso no catálogo.</li>
-                <li>Na barra lateral, clique em <strong>"Estudar Offline (Salvar no Aparelho)"</strong>.</li>
-                <li>As apostilas em PDF serão salvas na memória local para leitura imediata.</li>
-              </ol>
-            </div>
-            <a href="/slides/all" class="btn btn-primary fw-semibold px-4 py-2" style="background-color: #1d4ed8; border-color: #1d4ed8;">
-              <i class="fa fa-book me-1"></i> Explorar Catálogo de Cursos
-            </a>
-          </div>
-        `;
-        return;
+      const savedMap = new Map();
+      for (const c of savedCourses) {
+        savedMap.set(parseInt(c.id, 10), c);
       }
 
-      let html = '';
-      for (const c of courses) {
-        const id = parseInt(c.id, 10);
-        html += `
-          <div class="col-md-6 col-lg-4 mb-4 evolars-offline-item">
-            <div class="card h-100 shadow-sm border evolars-offline-course-card" data-course-name="${(c.name || '').replace(/"/g, '&quot;')}">
-              <div class="card-body d-flex flex-column justify-content-between p-4">
-                <div>
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="badge" style="background-color: #dcfce7; color: #14532d; border: 1px solid #86efac; font-weight: 700;">
-                      <i class="fa fa-check-circle me-1"></i>Salvo Offline
-                    </span>
-                    <span class="badge" style="background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 600;">
-                      ${c.size_mb || '0'} MB
-                    </span>
-                  </div>
-                  <h5 class="card-title font-weight-bold mb-2" style="color: #0f172a;">${c.name}</h5>
-                  <p class="small mb-3" style="color: #475569;">
-                    <i class="fa fa-file-pdf-o text-danger me-1"></i>
-                    ${c.total_slides || 'Várias'} apostilas disponíveis sem consumo de internet móvel.
-                  </p>
-                </div>
-                <div class="pt-3 border-top mt-auto d-flex flex-wrap gap-2">
-                  <button type="button" class="btn btn-primary btn-sm flex-grow-1 fw-bold" onclick="window.evolarsToggleCourseSlides(${id})">
-                    <i class="fa fa-folder-open-o me-1"></i> Ver Apostilas
-                  </button>
-                  <a href="/slides/${id}" class="btn btn-outline-secondary btn-sm" title="Abrir página do curso">
-                    <i class="fa fa-external-link"></i>
-                  </a>
-                  <button type="button" onclick="window.evolarsRemoveCourseOffline(${id})" class="btn btn-outline-danger btn-sm" title="Remover do aparelho para liberar espaço">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </div>
-                <div id="offline-slides-list-${id}" class="d-none mt-3 pt-3 border-top"></div>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-      container.innerHTML = html;
+      const items = container.querySelectorAll('.evolars-offline-item');
+      items.forEach((item) => {
+        const channelId = parseInt(item.getAttribute('data-channel-id'), 10);
+        const statusBadge = document.getElementById(`course-status-${channelId}`);
+        const saveBtn = document.getElementById(`save-btn-${channelId}`);
+
+        if (savedMap.has(channelId)) {
+          const savedData = savedMap.get(channelId);
+          if (statusBadge) {
+            statusBadge.className = 'badge';
+            statusBadge.style.cssText = 'background-color: #dcfce7; color: #14532d; border: 1px solid #86efac; font-weight: 700;';
+            statusBadge.innerHTML = `<i class="fa fa-check-circle me-1"></i>Salvo no Aparelho (${savedData.size_mb || '0'} MB)`;
+          }
+          if (saveBtn) {
+            saveBtn.className = 'btn btn-outline-danger btn-sm';
+            saveBtn.title = 'Remover da memória do aparelho';
+            saveBtn.innerHTML = '<i class="fa fa-trash"></i>';
+            saveBtn.onclick = function () { window.evolarsRemoveCourseOffline(channelId); };
+          }
+        }
+      });
     } catch (e) {
-      console.warn('[Evolars Offline] Erro ao renderizar biblioteca offline:', e);
-      container.innerHTML = `
-        <div class="col-12 text-center py-4">
-          <p class="text-danger mb-2">Não foi possível carregar os cursos offline neste momento.</p>
-          <button type="button" class="btn btn-sm btn-outline-primary" onclick="window.location.reload()">
-            <i class="fa fa-refresh me-1"></i> Tentar Novamente
-          </button>
-        </div>
-      `;
+      console.warn('[Evolars Offline] Aviso ao sincronizar status:', e);
     }
   }
 
-  // 10. Suporte a clique suave em botões com âncora #channels
+  // 10. Leitor Integrado no App (Canvas / PDF.js - Zero Download Externo)
+  let currentDoc = null;
+  let currentPageNum = 1;
+  let currentScale = 1.0;
+  let isRendering = false;
+  let renderPendingNum = null;
+
+  async function ensurePdfJs() {
+    if (window.pdfjsLib) return window.pdfjsLib;
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = '/web/static/lib/pdfjs/build/pdf.js';
+      script.onload = () => {
+        if (window.pdfjsLib) {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = '/web/static/lib/pdfjs/build/pdf.worker.js';
+          resolve(window.pdfjsLib);
+        } else {
+          reject(new Error('PDF.js não carregado'));
+        }
+      };
+      script.onerror = () => reject(new Error('Falha ao carregar leitor'));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function renderPage(num) {
+    if (!currentDoc) return;
+    isRendering = true;
+
+    try {
+      const page = await currentDoc.getPage(num);
+      const canvas = document.getElementById('evolars-viewer-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const container = document.getElementById('evolars-viewer-body');
+      const containerWidth = container ? Math.min(container.clientWidth - 40, 960) : 800;
+      const unscaledViewport = page.getViewport({ scale: 1.0 });
+      const fitScale = (containerWidth / unscaledViewport.width) * currentScale;
+      const viewport = page.getViewport({ scale: fitScale });
+
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      isRendering = false;
+
+      if (renderPendingNum !== null) {
+        const nextNum = renderPendingNum;
+        renderPendingNum = null;
+        renderPage(nextNum);
+      }
+    } catch (e) {
+      console.warn('[Evolars Viewer] Render error:', e);
+      isRendering = false;
+    }
+
+    const currEl = document.getElementById('evolars-viewer-curr-page');
+    if (currEl) currEl.textContent = String(num);
+
+    const prevBtn = document.getElementById('evolars-viewer-btn-prev');
+    const nextBtn = document.getElementById('evolars-viewer-btn-next');
+    if (prevBtn) prevBtn.disabled = (num <= 1);
+    if (nextBtn) nextBtn.disabled = (num >= currentDoc.numPages);
+  }
+
+  function queueRenderPage(num) {
+    if (isRendering) {
+      renderPendingNum = num;
+    } else {
+      renderPage(num);
+    }
+  }
+
+  window.evolarsOpenLessonInApp = async function (slideId, slideName, channelId) {
+    slideId = parseInt(slideId, 10);
+    const modal = document.getElementById('evolars-inapp-viewer-modal');
+    if (!modal) return;
+
+    modal.classList.remove('d-none');
+    document.body.style.overflow = 'hidden';
+
+    const titleEl = document.getElementById('evolars-viewer-title');
+    if (titleEl) titleEl.textContent = slideName || 'Apostila Oficial';
+
+    const loadingEl = document.getElementById('evolars-viewer-loading');
+    const canvasWrap = document.getElementById('evolars-viewer-canvas-wrap');
+    if (loadingEl) {
+      loadingEl.classList.remove('d-none');
+      loadingEl.innerHTML = `
+        <span class="fa fa-circle-o-notch fa-spin fa-3x" style="color: #38bdf8;"></span>
+        <p class="text-white mt-3 fw-semibold">Carregando conteúdo no leitor seguro...</p>
+      `;
+    }
+    if (canvasWrap) canvasWrap.classList.add('d-none');
+
+    try {
+      await ensurePdfJs();
+
+      const cache = await caches.open(COURSES_CACHE);
+      let cachedResp = await cache.match(`/slides/slide/${slideId}/pdf_content`);
+      let arrayBuf;
+
+      if (cachedResp) {
+        arrayBuf = await cachedResp.arrayBuffer();
+      } else {
+        const resp = await fetch(`/slides/slide/${slideId}/pdf_content`);
+        if (!resp.ok) throw new Error('Não foi possível carregar o material da aula');
+        const blob = await resp.blob();
+        arrayBuf = await blob.arrayBuffer();
+        try {
+          await cache.put(`/slides/slide/${slideId}/pdf_content`, new Response(blob, {
+            headers: { 'Content-Type': 'application/pdf', 'Content-Length': blob.size }
+          }));
+        } catch (_) {}
+      }
+
+      currentDoc = await window.pdfjsLib.getDocument({ data: arrayBuf }).promise;
+      currentPageNum = 1;
+      currentScale = 1.0;
+
+      const totalEl = document.getElementById('evolars-viewer-total-pages');
+      if (totalEl) totalEl.textContent = String(currentDoc.numPages);
+
+      if (loadingEl) loadingEl.classList.add('d-none');
+      if (canvasWrap) canvasWrap.classList.remove('d-none');
+
+      renderPage(currentPageNum);
+    } catch (err) {
+      console.error('[Evolars Viewer] Falha ao abrir apostila:', err);
+      if (loadingEl) {
+        loadingEl.innerHTML = `
+          <div class="text-danger py-4">
+            <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+            <p class="mb-2 text-white">Não foi possível exibir esta apostila no momento.</p>
+            <button type="button" class="btn btn-sm btn-outline-light" onclick="window.evolarsCloseInAppViewer()">Fechar</button>
+          </div>
+        `;
+      }
+    }
+  };
+
+  window.evolarsCloseInAppViewer = function () {
+    const modal = document.getElementById('evolars-inapp-viewer-modal');
+    if (modal) modal.classList.add('d-none');
+    document.body.style.overflow = '';
+    currentDoc = null;
+    currentPageNum = 1;
+  };
+
+  window.evolarsViewerPrevPage = function () {
+    if (!currentDoc || currentPageNum <= 1) return;
+    currentPageNum--;
+    queueRenderPage(currentPageNum);
+  };
+
+  window.evolarsViewerNextPage = function () {
+    if (!currentDoc || currentPageNum >= currentDoc.numPages) return;
+    currentPageNum++;
+    queueRenderPage(currentPageNum);
+  };
+
+  window.evolarsViewerZoom = function (delta) {
+    if (!currentDoc) return;
+    const newScale = currentScale + delta;
+    if (newScale >= 0.6 && newScale <= 2.5) {
+      currentScale = newScale;
+      queueRenderPage(currentPageNum);
+    }
+  };
+
+  window.evolarsViewerToggleFullscreen = function () {
+    const modal = document.getElementById('evolars-inapp-viewer-modal');
+    if (!modal) return;
+    if (!document.fullscreenElement) {
+      modal.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
+
+  document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('evolars-inapp-viewer-modal');
+    if (!modal || modal.classList.contains('d-none')) return;
+
+    if (e.key === 'Escape') {
+      window.evolarsCloseInAppViewer();
+    } else if (e.key === 'ArrowLeft') {
+      window.evolarsViewerPrevPage();
+    } else if (e.key === 'ArrowRight') {
+      window.evolarsViewerNextPage();
+    }
+  });
+
+  // 11. Suporte a clique suave em botões com âncora #channels
   document.addEventListener('click', (e) => {
     const anchor = e.target.closest('a[href="#channels"], a[href$="/slides#channels"]');
     if (anchor) {
@@ -461,7 +573,7 @@
     }
   });
 
-  // 11. Inicialização Imediata e Resiliente
+  // 12. Inicialização Imediata e Resiliente
   function initEvolarsOffline() {
     updateNetworkStatus();
     renderOfflineLibrary();

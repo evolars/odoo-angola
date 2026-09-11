@@ -100,11 +100,6 @@
                            title="Inicie sessão para salvar este curso offline no aparelho">
                             <i class="fa fa-download me-1"></i> Estudar Offline (Salvar no Aparelho)
                         </a>
-                        <a t-attf-href="/web/login?redirect=/slides/channel/#{channel.id}/download_package"
-                           class="btn btn-outline-secondary btn-sm evolars-btn-download-zip fw-semibold"
-                           title="Inicie sessão para baixar o pacote de apostilas .ZIP">
-                            <i class="fa fa-file-archive-o me-1"></i> Baixar Pacote Completo (.ZIP)
-                        </a>
                     </t>
                     <t t-else="">
                         <button type="button"
@@ -113,11 +108,6 @@
                                 class="btn btn-outline-primary btn-sm evolars-btn-download-offline fw-semibold">
                             <i class="fa fa-download me-1"></i> Estudar Offline (Salvar no Aparelho)
                         </button>
-                        <a t-attf-href="/slides/channel/#{channel.id}/download_package"
-                           class="btn btn-outline-secondary btn-sm evolars-btn-download-zip fw-semibold"
-                           title="Baixar todas as apostilas em um único arquivo .ZIP para pendrive ou compartilhamento">
-                            <i class="fa fa-file-archive-o me-1"></i> Baixar Pacote Completo (.ZIP)
-                        </a>
                     </t>
                 </div>
                 <div class="small text-center mt-1" style="font-size: 11px; color: #334155;">
@@ -212,7 +202,7 @@
                         </div>
                         <h1 class="display-6 fw-bold mb-1 text-white">Catálogo de Cursos Técnicos</h1>
                         <p class="mb-0" style="color: #e2e8f0 !important; font-size: 0.95rem;">
-                            Todos os cursos possuem suporte a download offline e pacote .ZIP para economizar seus dados móveis em Angola.
+                            Cursos técnicos com leitor integrado e suporte a estudo offline no aplicativo para economia de dados em Angola.
                         </p>
                     </div>
                     <div>
@@ -362,18 +352,139 @@
                             <span class="input-group-text bg-white border-end-0" style="color: #64748b;">
                                 <i class="fa fa-search"></i>
                             </span>
-                            <input type="text" id="evolars-offline-search" class="form-control border-start-0" placeholder="Pesquisar nos seus cursos salvos..." oninput="window.evolarsFilterOfflineCourses &amp;&amp; window.evolarsFilterOfflineCourses(this.value)" style="color: #0f172a; font-weight: 500;"/>
+                            <input type="text" id="evolars-offline-search" class="form-control border-start-0" placeholder="Pesquisar cursos ou lições..." oninput="window.evolarsFilterOfflineCourses &amp;&amp; window.evolarsFilterOfflineCourses(this.value)" style="color: #0f172a; font-weight: 500;"/>
                         </div>
                     </div>
                 </div>
 
                 <div id="evolars-offline-library-list" class="row">
-                    <div class="col-12 text-center py-5">
-                        <span class="fa fa-spinner fa-spin fa-2x text-primary"></span>
-                        <p class="mt-2" style="color: #334155; font-size: 1rem;">Carregando cursos salvos no seu aparelho...</p>
-                    </div>
+                    <t t-if="channels">
+                        <t t-foreach="channels" t-as="c">
+                            <t t-set="doc_slides" t-value="c.slide_ids.filtered(lambda s: s.slide_category == 'document' and s.is_published).sorted(lambda s: s.sequence)"/>
+                            <div class="col-md-6 col-lg-4 mb-4 evolars-offline-item" t-att-data-channel-id="c.id">
+                                <div class="card h-100 shadow-sm border evolars-offline-course-card" t-att-data-course-name="c.name" style="border-color: #cbd5e1 !important; border-radius: 10px;">
+                                    <div class="card-body d-flex flex-column justify-content-between p-4">
+                                        <div>
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="badge evolars-status-tag" t-att-id="'course-status-' + str(c.id)" style="background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 600;">
+                                                    <i class="fa fa-cloud me-1"></i>Catálogo Online
+                                                </span>
+                                                <span class="badge" style="background-color: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; font-weight: 700;">
+                                                    <t t-esc="len(doc_slides)"/> apostilas
+                                                </span>
+                                            </div>
+                                            <h5 class="card-title font-weight-bold mb-2" style="color: #0f172a; font-weight: 700;">
+                                                <t t-esc="c.name"/>
+                                            </h5>
+                                            <p class="small mb-3" style="color: #475569; line-height: 1.5;">
+                                                <t t-if="c.description">
+                                                    <t t-esc="c.description[:110] + ('...' if len(c.description) > 110 else '')"/>
+                                                </t>
+                                                <t t-else="">
+                                                    Capacitação técnica profissional com apostilas digitais e leitura integrada no app.
+                                                </t>
+                                            </p>
+                                        </div>
+
+                                        <div class="pt-3 border-top mt-auto">
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <button type="button" class="btn btn-primary btn-sm flex-grow-1 fw-bold evolars-btn-toggle-slides" t-att-onclick="'window.evolarsToggleCourseSlides(' + str(c.id) + ')'" style="background-color: #1d4ed8; border-color: #1d4ed8;">
+                                                    <i class="fa fa-book me-1"></i> Ver Apostilas (<t t-esc="len(doc_slides)"/>)
+                                                </button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm evolars-action-save-btn" t-att-id="'save-btn-' + str(c.id)" t-att-data-channel-id="c.id" onclick="window.evolarsDownloadCourseOffline(this.dataset.channelId, this)" title="Salvar todas as apostilas no aparelho para leitura offline sem gastar dados">
+                                                    <i class="fa fa-download"></i>
+                                                </button>
+                                            </div>
+
+                                            <div t-att-id="'offline-slides-list-' + str(c.id)" class="d-none mt-3 pt-3 border-top">
+                                                <ul class="list-group list-group-flush">
+                                                    <t t-foreach="doc_slides" t-as="s">
+                                                        <li class="list-group-item d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center py-2 px-0 bg-transparent border-bottom gap-2">
+                                                            <div class="d-flex align-items-center text-break me-2" style="max-width: 70%;">
+                                                                <i class="fa fa-file-pdf-o text-danger me-2" style="font-size: 1.1rem;"></i>
+                                                                <span class="fw-semibold" style="color: #0f172a; font-size: 0.88rem;"><t t-esc="s.name"/></span>
+                                                            </div>
+                                                            <div class="d-flex gap-1 flex-shrink-0 align-self-end align-self-sm-center">
+                                                                <button type="button" class="btn btn-sm btn-primary py-1 px-2 fw-bold evolars-btn-read-app"
+                                                                        t-att-data-slide-id="s.id"
+                                                                        t-att-data-slide-name="s.name"
+                                                                        t-att-data-channel-id="c.id"
+                                                                        onclick="window.evolarsOpenLessonInApp(this.dataset.slideId, this.dataset.slideName, this.dataset.channelId)"
+                                                                        style="background-color: #1d4ed8; border-color: #1d4ed8; font-size: 12px;">
+                                                                    <i class="fa fa-eye me-1"></i> Estudar no App
+                                                                </button>
+                                                            </div>
+                                                        </li>
+                                                    </t>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <div class="col-12 text-center py-5">
+                            <span class="fa fa-spinner fa-spin fa-2x text-primary"></span>
+                            <p class="mt-2" style="color: #334155; font-size: 1rem;">Carregando cursos no seu aparelho...</p>
+                        </div>
+                    </t>
                 </div>
             </div>
         </t>
+    </template>
+
+    <!-- 10. Modal do Leitor Integrado no App (Leitura Exclusiva sem Download Externo) -->
+    <template id="evolars_inapp_viewer_modal_template" inherit_id="website.layout" name="Evolars In-App Document Viewer">
+        <xpath expr="//footer | //div[@id='footer']" position="after">
+            <div id="evolars-inapp-viewer-modal" class="d-none evolars-viewer-root" role="dialog" aria-modal="true" aria-labelledby="evolars-viewer-title">
+                <div class="evolars-viewer-overlay" onclick="window.evolarsCloseInAppViewer()"></div>
+                <div class="evolars-viewer-window">
+                    <div class="evolars-viewer-header d-flex justify-content-between align-items-center px-3 py-2">
+                        <div class="d-flex align-items-center gap-2 text-truncate me-2">
+                            <i class="fa fa-book" style="color: #60a5fa; font-size: 1.1rem;"></i>
+                            <h5 id="evolars-viewer-title" class="mb-0 text-truncate fw-bold text-white" style="font-size: 0.95rem;"></h5>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                            <button type="button" class="btn btn-sm evolars-viewer-ctrl-btn" onclick="window.evolarsViewerZoom(-0.2)" title="Diminuir Zoom">
+                                <i class="fa fa-search-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm evolars-viewer-ctrl-btn" onclick="window.evolarsViewerZoom(0.2)" title="Aumentar Zoom">
+                                <i class="fa fa-search-plus"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm evolars-viewer-ctrl-btn" onclick="window.evolarsViewerToggleFullscreen()" title="Tela Inteira">
+                                <i class="fa fa-expand"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger fw-bold ms-2 py-1 px-3" onclick="window.evolarsCloseInAppViewer()" title="Fechar Leitor">
+                                <i class="fa fa-times me-1"></i> Fechar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="evolars-viewer-body" id="evolars-viewer-body">
+                        <div id="evolars-viewer-loading" class="text-center py-5">
+                            <span class="fa fa-circle-o-notch fa-spin fa-3x" style="color: #38bdf8;"></span>
+                            <p class="text-white mt-3 fw-semibold">Carregando conteúdo no leitor seguro...</p>
+                        </div>
+                        <div id="evolars-viewer-canvas-wrap" class="d-none text-center">
+                            <canvas id="evolars-viewer-canvas" class="shadow-lg"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="evolars-viewer-footer d-flex justify-content-between align-items-center px-3 py-2">
+                        <button type="button" id="evolars-viewer-btn-prev" class="btn btn-sm btn-primary fw-bold" onclick="window.evolarsViewerPrevPage()">
+                            <i class="fa fa-chevron-left me-1"></i> Anterior
+                        </button>
+                        <div class="text-white fw-bold" style="font-size: 0.9rem;">
+                            Página <span id="evolars-viewer-curr-page">1</span> de <span id="evolars-viewer-total-pages">1</span>
+                        </div>
+                        <button type="button" id="evolars-viewer-btn-next" class="btn btn-sm btn-primary fw-bold" onclick="window.evolarsViewerNextPage()">
+                            Próxima <i class="fa fa-chevron-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </xpath>
     </template>
 </odoo>

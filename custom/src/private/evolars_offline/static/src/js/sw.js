@@ -6,6 +6,8 @@ const PRECACHE_URLS = [
   '/slides/all',
   '/slides/offline',
   '/site.webmanifest',
+  '/web/static/lib/pdfjs/build/pdf.js',
+  '/web/static/lib/pdfjs/build/pdf.worker.js',
 ];
 
 self.addEventListener('install', (event) => {
