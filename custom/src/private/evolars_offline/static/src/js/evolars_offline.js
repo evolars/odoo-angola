@@ -509,10 +509,22 @@
 
   window.evolarsCloseInAppViewer = function () {
     const modal = document.getElementById('evolars-inapp-viewer-modal');
-    if (modal) modal.classList.add('d-none');
+    if (modal) {
+      modal.classList.add('d-none');
+      modal.classList.remove('evolars-viewer-maximized');
+    }
     document.body.style.overflow = '';
     currentDoc = null;
     currentPageNum = 1;
+
+    const exitFs = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+    const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+    if (isFs && typeof exitFs === 'function') {
+      try {
+        const p = exitFs.call(document);
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      } catch (_) {}
+    }
   };
 
   window.evolarsViewerPrevPage = function () {
@@ -539,10 +551,32 @@
   window.evolarsViewerToggleFullscreen = function () {
     const modal = document.getElementById('evolars-inapp-viewer-modal');
     if (!modal) return;
-    if (!document.fullscreenElement) {
-      modal.requestFullscreen().catch(() => {});
+
+    const requestFs = modal.requestFullscreen || modal.webkitRequestFullscreen || modal.mozRequestFullScreen || modal.msRequestFullscreen;
+    const exitFs = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+    const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+
+    if (!isFs && typeof requestFs === 'function') {
+      try {
+        const p = requestFs.call(modal);
+        if (p && typeof p.catch === 'function') {
+          p.catch(() => {
+            modal.classList.toggle('evolars-viewer-maximized');
+            if (currentDoc) queueRenderPage(currentPageNum);
+          });
+        }
+      } catch (_) {
+        modal.classList.toggle('evolars-viewer-maximized');
+        if (currentDoc) queueRenderPage(currentPageNum);
+      }
+    } else if (isFs && typeof exitFs === 'function') {
+      try {
+        const p = exitFs.call(document);
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      } catch (_) {}
     } else {
-      document.exitFullscreen().catch(() => {});
+      modal.classList.toggle('evolars-viewer-maximized');
+      if (currentDoc) queueRenderPage(currentPageNum);
     }
   };
 
