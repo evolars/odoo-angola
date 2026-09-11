@@ -2,7 +2,7 @@
 {
     "name": "Evolars Angola Offline & PWA",
     "summary": "Suporte a aprendizado offline, leitor de documentos integrado e PWA para economia de dados em Angola",
-    "version": "17.0.1.0.6",
+    "version": "17.0.1.0.7",
     "category": "Website",
     "author": "Evolars LTDA",
     "website": "https://evolars.com.br",

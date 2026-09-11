@@ -357,15 +357,15 @@
                     </div>
                 </div>
 
-                <div id="evolars-offline-library-list" class="row">
+                <div id="evolars-offline-library-list" class="row align-items-start">
                     <t t-if="channels">
                         <t t-foreach="channels" t-as="c">
                             <t t-set="doc_slides" t-value="c.slide_ids.filtered(lambda s: s.slide_category == 'document' and s.is_published).sorted(lambda s: s.sequence)"/>
                             <div class="col-md-6 col-lg-4 mb-4 evolars-offline-item" t-att-data-channel-id="c.id">
-                                <div class="card h-100 shadow-sm border evolars-offline-course-card" t-att-data-course-name="c.name" style="border-color: #cbd5e1 !important; border-radius: 10px;">
-                                    <div class="card-body d-flex flex-column justify-content-between p-4">
-                                        <div>
-                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="card shadow-sm border evolars-offline-course-card" t-att-data-course-name="c.name" style="border-color: #cbd5e1 !important; border-radius: 10px;">
+                                    <div class="card-body p-3 p-md-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="d-flex flex-wrap gap-1 align-items-center">
                                                 <span class="badge evolars-status-tag" t-att-id="'course-status-' + str(c.id)" style="background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 600;">
                                                     <i class="fa fa-cloud me-1"></i>Catálogo Online
                                                 </span>
@@ -373,51 +373,61 @@
                                                     <t t-esc="len(doc_slides)"/> apostilas
                                                 </span>
                                             </div>
-                                            <h5 class="card-title font-weight-bold mb-2" style="color: #0f172a; font-weight: 700;">
-                                                <t t-esc="c.name"/>
-                                            </h5>
-                                            <p class="small mb-3" style="color: #475569; line-height: 1.5;">
-                                                <t t-if="c.description">
-                                                    <t t-esc="c.description[:110] + ('...' if len(c.description) > 110 else '')"/>
-                                                </t>
-                                                <t t-else="">
-                                                    Capacitação técnica profissional com apostilas digitais e leitura integrada no app.
-                                                </t>
-                                            </p>
+                                            <button type="button" class="btn btn-outline-primary btn-sm evolars-action-save-btn py-1 px-2"
+                                                    t-att-id="'save-btn-' + str(c.id)"
+                                                    t-att-data-channel-id="c.id"
+                                                    onclick="event.stopPropagation(); window.evolarsDownloadCourseOffline(this.dataset.channelId, this)"
+                                                    title="Salvar todas as apostilas no aparelho para leitura offline sem gastar dados">
+                                                <i class="fa fa-download"></i>
+                                            </button>
                                         </div>
 
-                                        <div class="pt-3 border-top mt-auto">
-                                            <div class="d-flex flex-wrap gap-2">
-                                                <button type="button" class="btn btn-primary btn-sm flex-grow-1 fw-bold evolars-btn-toggle-slides" t-att-onclick="'window.evolarsToggleCourseSlides(' + str(c.id) + ')'" style="background-color: #1d4ed8; border-color: #1d4ed8;">
-                                                    <i class="fa fa-book me-1"></i> Ver Apostilas (<t t-esc="len(doc_slides)"/>)
-                                                </button>
-                                                <button type="button" class="btn btn-outline-primary btn-sm evolars-action-save-btn" t-att-id="'save-btn-' + str(c.id)" t-att-data-channel-id="c.id" onclick="window.evolarsDownloadCourseOffline(this.dataset.channelId, this)" title="Salvar todas as apostilas no aparelho para leitura offline sem gastar dados">
-                                                    <i class="fa fa-download"></i>
-                                                </button>
-                                            </div>
+                                        <div class="evolars-course-title-toggle d-flex justify-content-between align-items-start gap-2 cursor-pointer mt-2"
+                                             role="button"
+                                             tabindex="0"
+                                             t-att-id="'course-header-' + str(c.id)"
+                                             t-att-onclick="'window.evolarsToggleCourseSlides(' + str(c.id) + ')'"
+                                             t-att-onkeydown="'if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault(); window.evolarsToggleCourseSlides(' + str(c.id) + ');}'"
+                                             aria-expanded="false"
+                                             t-att-aria-controls="'offline-slides-list-' + str(c.id)">
+                                            <h5 class="card-title font-weight-bold mb-0 evolars-course-title text-break" style="color: #0f172a; font-weight: 700;">
+                                                <t t-esc="c.name"/>
+                                            </h5>
+                                            <span class="evolars-toggle-chevron ms-1 flex-shrink-0 text-primary pt-1" t-att-id="'course-chevron-' + str(c.id)">
+                                                <i class="fa fa-chevron-down"></i>
+                                            </span>
+                                        </div>
 
-                                            <div t-att-id="'offline-slides-list-' + str(c.id)" class="d-none mt-3 pt-3 border-top">
-                                                <ul class="list-group list-group-flush">
-                                                    <t t-foreach="doc_slides" t-as="s">
-                                                        <li class="list-group-item d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center py-2 px-0 bg-transparent border-bottom gap-2">
-                                                            <div class="d-flex align-items-center text-break me-2" style="max-width: 70%;">
-                                                                <i class="fa fa-file-pdf-o text-danger me-2" style="font-size: 1.1rem;"></i>
-                                                                <span class="fw-semibold" style="color: #0f172a; font-size: 0.88rem;"><t t-esc="s.name"/></span>
-                                                            </div>
-                                                            <div class="d-flex gap-1 flex-shrink-0 align-self-end align-self-sm-center">
-                                                                <button type="button" class="btn btn-sm btn-primary py-1 px-2 fw-bold evolars-btn-read-app"
-                                                                        t-att-data-slide-id="s.id"
-                                                                        t-att-data-slide-name="s.name"
-                                                                        t-att-data-channel-id="c.id"
-                                                                        onclick="window.evolarsOpenLessonInApp(this.dataset.slideId, this.dataset.slideName, this.dataset.channelId)"
-                                                                        style="background-color: #1d4ed8; border-color: #1d4ed8; font-size: 12px;">
-                                                                    <i class="fa fa-eye me-1"></i> Estudar no App
-                                                                </button>
-                                                            </div>
-                                                        </li>
-                                                    </t>
-                                                </ul>
-                                            </div>
+                                        <p class="small mb-0 mt-2 text-muted" style="color: #475569 !important; line-height: 1.5;">
+                                            <t t-if="c.description">
+                                                <t t-esc="c.description[:110] + ('...' if len(c.description) > 110 else '')"/>
+                                            </t>
+                                            <t t-else="">
+                                                Capacitação técnica profissional com apostilas digitais e leitura integrada no app.
+                                            </t>
+                                        </p>
+
+                                        <div t-att-id="'offline-slides-list-' + str(c.id)" class="d-none mt-3 pt-3 border-top evolars-slides-collapse">
+                                            <ul class="list-group list-group-flush">
+                                                <t t-foreach="doc_slides" t-as="s">
+                                                    <li class="list-group-item d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center py-2 px-0 bg-transparent border-bottom gap-2">
+                                                        <div class="d-flex align-items-center text-break me-2" style="max-width: 70%;">
+                                                            <i class="fa fa-file-pdf-o text-danger me-2" style="font-size: 1.1rem;"></i>
+                                                            <span class="fw-semibold" style="color: #0f172a; font-size: 0.88rem;"><t t-esc="s.name"/></span>
+                                                        </div>
+                                                        <div class="d-flex gap-1 flex-shrink-0 align-self-end align-self-sm-center">
+                                                            <button type="button" class="btn btn-sm btn-primary py-1 px-2 fw-bold evolars-btn-read-app"
+                                                                    t-att-data-slide-id="s.id"
+                                                                    t-att-data-slide-name="s.name"
+                                                                    t-att-data-channel-id="c.id"
+                                                                    onclick="window.evolarsOpenLessonInApp(this.dataset.slideId, this.dataset.slideName, this.dataset.channelId)"
+                                                                    style="background-color: #1d4ed8; border-color: #1d4ed8; font-size: 12px;">
+                                                                <i class="fa fa-eye me-1"></i> Estudar no App
+                                                            </button>
+                                                        </div>
+                                                    </li>
+                                                </t>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>

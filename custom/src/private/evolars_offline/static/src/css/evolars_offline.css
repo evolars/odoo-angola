@@ -863,4 +863,32 @@
     min-height: 52px;
 }
 
+.evolars-offline-course-card {
+    border-radius: 10px;
+    border-color: #cbd5e1 !important;
+    background-color: #ffffff;
+    transition: box-shadow 0.15s ease;
+}
+
+.evolars-offline-course-card:hover {
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08) !important;
+}
+
+.evolars-course-title-toggle {
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.15s ease;
+}
+
+.evolars-course-title-toggle:hover .evolars-course-title,
+.evolars-course-title-toggle:focus-visible .evolars-course-title {
+    color: #1d4ed8 !important;
+    text-decoration: underline;
+}
+
+.evolars-toggle-chevron {
+    font-size: 0.95rem;
+    transition: transform 0.2s ease, color 0.15s ease;
+}
+
 

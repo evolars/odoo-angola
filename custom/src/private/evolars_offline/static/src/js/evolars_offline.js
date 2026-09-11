@@ -259,10 +259,13 @@
           statusBadge.innerHTML = '<i class="fa fa-cloud me-1"></i>Catálogo Online';
         }
         if (saveBtn) {
-          saveBtn.className = 'btn btn-outline-primary btn-sm evolars-action-save-btn';
+          saveBtn.className = 'btn btn-outline-primary btn-sm evolars-action-save-btn py-1 px-2';
           saveBtn.title = 'Salvar no aparelho para estudo offline';
           saveBtn.innerHTML = '<i class="fa fa-download"></i>';
-          saveBtn.onclick = function () { window.evolarsDownloadCourseOffline(channelId, this); };
+          saveBtn.onclick = function (e) {
+            if (e) e.stopPropagation();
+            window.evolarsDownloadCourseOffline(channelId, this);
+          };
         }
         alert('Curso removido da memória do aparelho com sucesso.');
       };
@@ -271,12 +274,23 @@
     }
   };
 
-  // 7. Expansão/Visualização das Lições do Curso
+  // 7. Expansão/Visualização das Lições do Curso (Acordeão Colapsado)
   window.evolarsToggleCourseSlides = function (channelId) {
     channelId = parseInt(channelId, 10);
     const target = document.getElementById(`offline-slides-list-${channelId}`);
+    const chevron = document.getElementById(`course-chevron-${channelId}`);
+    const header = document.getElementById(`course-header-${channelId}`);
     if (target) {
-      target.classList.toggle('d-none');
+      const isHidden = target.classList.contains('d-none');
+      if (isHidden) {
+        target.classList.remove('d-none');
+        if (chevron) chevron.innerHTML = '<i class="fa fa-chevron-up"></i>';
+        if (header) header.setAttribute('aria-expanded', 'true');
+      } else {
+        target.classList.add('d-none');
+        if (chevron) chevron.innerHTML = '<i class="fa fa-chevron-down"></i>';
+        if (header) header.setAttribute('aria-expanded', 'false');
+      }
     }
   };
 
@@ -353,10 +367,13 @@
             statusBadge.innerHTML = `<i class="fa fa-check-circle me-1"></i>Salvo no Aparelho (${savedData.size_mb || '0'} MB)`;
           }
           if (saveBtn) {
-            saveBtn.className = 'btn btn-outline-danger btn-sm';
+            saveBtn.className = 'btn btn-outline-danger btn-sm evolars-action-save-btn py-1 px-2';
             saveBtn.title = 'Remover da memória do aparelho';
             saveBtn.innerHTML = '<i class="fa fa-trash"></i>';
-            saveBtn.onclick = function () { window.evolarsRemoveCourseOffline(channelId); };
+            saveBtn.onclick = function (e) {
+              if (e) e.stopPropagation();
+              window.evolarsRemoveCourseOffline(channelId);
+            };
           }
         }
       });
