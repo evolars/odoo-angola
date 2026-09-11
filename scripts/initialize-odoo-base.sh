@@ -7,8 +7,8 @@ set -eu
 : "${PGUSER:?PGUSER is required}"
 : "${PGPASSWORD:?PGPASSWORD is required}"
 
-export ODOO_BOOTSTRAP_MODULES="base,remove_odoo_enterprise,disable_odoo_online,web_responsive,website,website_slides,portal,evolars_email"
-export ODOO_UPGRADE_MODULES="evolars_email"
+export ODOO_BOOTSTRAP_MODULES="base,remove_odoo_enterprise,disable_odoo_online,web_responsive,website,website_slides,portal,evolars_email,evolars_offline"
+export ODOO_UPGRADE_MODULES="evolars_email,evolars_offline"
 
 echo "[initialize-odoo-base] Verificando e garantindo role '$PGUSER', banco '$PGDATABASE' e permissões..."
 python3 - <<'PY'

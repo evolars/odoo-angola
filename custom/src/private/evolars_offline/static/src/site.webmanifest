@@ -1,0 +1,25 @@
+{
+  "name": "Evolars Angola - E-learning Offline",
+  "short_name": "Evolars Angola",
+  "description": "Capacitação tecnológica e cursos práticos em Angola com suporte a estudo offline",
+  "start_url": "/slides",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#08090a",
+  "theme_color": "#08090a",
+  "lang": "pt-AO",
+  "categories": ["education", "technology"],
+  "icons": [
+    {
+      "src": "/web/image/website/1/favicon",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/web/image/website/1/favicon",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

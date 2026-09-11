@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. Injeção de PWA no Head -->
+    <template id="evolars_offline_pwa_head" inherit_id="website.layout" name="Evolars Offline PWA Meta">
+        <xpath expr="//head" position="inside">
+            <link rel="manifest" href="/site.webmanifest"/>
+            <meta name="theme-color" content="#08090a"/>
+            <meta name="mobile-web-app-capable" content="yes"/>
+            <meta name="apple-mobile-web-app-capable" content="yes"/>
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+        </xpath>
+    </template>
+
+    <!-- 2. Status de Conectividade e Link Offline na Navegação Superior -->
+    <template id="evolars_offline_nav_status" inherit_id="portal.placeholder_user_sign_in" name="Evolars Offline Nav Status">
+        <xpath expr="." position="inside">
+            <li class="nav-item d-flex align-items-center me-2">
+                <a href="/slides/offline" class="nav-link py-1 px-2 d-flex align-items-center text-decoration-none" title="Acessar cursos salvos no aparelho">
+                    <i class="fa fa-folder-open-o text-primary me-1"></i>
+                    <span>Cursos Salvos</span>
+                </a>
+                <span id="evolars-network-status" class="evolars-status-pill evolars-status-online ms-1">
+                    <span class="status-dot"></span>
+                    <span>Online</span>
+                </span>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- 3. Botões de Ação Offline na Barra Lateral do Curso -->
+    <template id="evolars_offline_course_sidebar_actions" inherit_id="website_slides.course_sidebar" name="Evolars Offline Sidebar Actions">
+        <xpath expr="//div[contains(@class, 'o_wslides_course_sidebar')]" position="inside">
+            <div class="mt-3 pt-3 border-top evolars-offline-actions-container">
+                <div class="d-grid gap-2">
+                    <button type="button"
+                            t-att-data-channel-id="channel.id"
+                            onclick="evolarsDownloadCourseOffline(this.dataset.channelId, this)"
+                            class="btn btn-outline-primary btn-sm evolars-btn-download-offline">
+                        <i class="fa fa-download me-1"></i> Estudar Offline (Salvar no Aparelho)
+                    </button>
+                    <a t-attf-href="/slides/channel/#{channel.id}/download_package"
+                       class="btn btn-outline-secondary btn-sm evolars-btn-download-zip"
+                       title="Baixar todas as apostilas em um único arquivo .ZIP para pendrive ou compartilhamento">
+                        <i class="fa fa-file-archive-o me-1"></i> Baixar Pacote Completo (.ZIP)
+                    </a>
+                </div>
+                <div class="small text-muted text-center mt-1" style="font-size: 11px;">
+                    <i class="fa fa-bolt text-warning me-1"></i> Economize sua internet móvel
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- 4. Página Biblioteca de Cursos Salvos (/slides/offline) -->
+    <template id="offline_library_template" name="Meus Cursos Salvos (Offline)">
+        <t t-call="website.layout">
+            <div id="wrap" class="container py-5">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                        <h2 class="mb-1 font-weight-bold">Meus Cursos Salvos (Modo Offline)</h2>
+                        <p class="text-muted mb-0">
+                            Cursos armazenados na memória do seu aparelho para estudo sem consumo de dados móveis.
+                        </p>
+                    </div>
+                    <div class="mt-3 mt-md-0 d-flex align-items-center gap-2">
+                        <a href="/slides/all" class="btn btn-outline-primary btn-sm">
+                            <i class="fa fa-book me-1"></i> Ver Catálogo Completo
+                        </a>
+                    </div>
+                </div>
+
+                <div id="evolars-offline-library-list" class="row">
+                    <div class="col-12 text-center py-5">
+                        <span class="fa fa-spinner fa-spin fa-2x text-muted"></span>
+                        <p class="text-muted mt-2">Carregando cursos salvos no seu aparelho...</p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
