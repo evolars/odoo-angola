@@ -1,7 +1,7 @@
 {
-  "name": "Evolars Angola - E-learning Offline",
+  "name": "Evolars Angola & Voz no Papel Editorial",
   "short_name": "Evolars Angola",
-  "description": "Capacitação tecnológica e cursos práticos em Angola com suporte a estudo offline",
+  "description": "Capacitação tecnológica de elite com modo 100% offline para economia de dados móveis em Angola",
   "start_url": "/slides",
   "scope": "/",
   "display": "standalone",
@@ -12,12 +12,12 @@
   "categories": ["education", "technology"],
   "icons": [
     {
-      "src": "/web/image/website/1/favicon",
+      "src": "/evolars_offline/static/src/img/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/web/image/website/1/favicon",
+      "src": "/evolars_offline/static/src/img/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

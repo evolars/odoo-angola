@@ -1,4 +1,11 @@
-/* Estilos do Módulo Offline Evolars Angola */
+/* Estilos do Módulo Offline & Branding Evolars Angola */
+
+.navbar-brand.logo img,
+.navbar-brand img {
+    max-height: 46px !important;
+    width: auto !important;
+    object-fit: contain;
+}
 
 .evolars-status-pill {
     display: inline-flex;
@@ -41,33 +48,80 @@
     box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
 }
 
-.evolars-offline-actions-bar {
+.evolars-hero-banner {
+    background: linear-gradient(135deg, #090a0d 0%, #11141c 45%, #182030 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+}
+
+.evolars-hero-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.evolars-hero-logo {
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+.evolars-feature-icon {
+    width: 42px;
+    height: 42px;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
-    margin: 16px 0;
-    padding: 12px 16px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
+    justify-content: center;
+    background: rgba(13, 110, 253, 0.15);
+    border-radius: 10px;
+    flex-shrink: 0;
+    color: #3b82f6;
 }
 
-.evolars-offline-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
+.evolars-all-courses-banner {
+    background: linear-gradient(135deg, #090a0d 0%, #121824 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.evolars-whatsapp-floating {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background-color: #25D366;
+    color: #ffffff !important;
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-size: 14px;
     font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.45);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.evolars-offline-badge {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 12px;
+.evolars-whatsapp-floating i {
+    font-size: 20px;
+}
+
+.evolars-whatsapp-floating:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(37, 211, 102, 0.6);
+    color: #ffffff !important;
+}
+
+@media (max-width: 576px) {
+    .evolars-whatsapp-floating {
+        bottom: 18px;
+        right: 18px;
+        padding: 10px;
+        border-radius: 50%;
+    }
 }

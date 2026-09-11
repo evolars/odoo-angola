@@ -51,7 +51,221 @@
         </xpath>
     </template>
 
-    <!-- 4. Página Biblioteca de Cursos Salvos (/slides/offline) -->
+    <!-- 4. Hero Banner em /slides: Anúncio do Modo Offline & Diferencial Angola -->
+    <template id="evolars_courses_home_banner" inherit_id="website_slides.courses_home" name="Evolars Hero Offline Banner">
+        <xpath expr="//section[contains(@class, 's_banner')]" position="replace">
+            <section class="s_banner evolars-hero-banner py-5 text-white" data-snippet="s_banner">
+                <div class="container">
+                    <div class="row align-items-center gy-4">
+                        <div class="col-lg-7">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <img src="/evolars_offline/static/src/img/logo_voz_no_papel_white.png" alt="Voz no Papel Editorial" class="evolars-hero-logo"/>
+                                <span class="badge bg-primary text-uppercase px-2 py-1" style="font-size: 11px; letter-spacing: 0.5px; font-weight: 600;">Evolars Angola</span>
+                            </div>
+                            <h1 class="display-5 fw-bold mb-3 lh-sm">
+                                Estude <span class="text-primary">100% Offline</span> &amp; Economize Seus Dados Móveis
+                            </h1>
+                            <p class="lead text-light mb-4" style="font-size: 1.1rem; opacity: 0.92;">
+                                Feito para Angola: sabemos o valor da sua internet. Baixe cursos técnicos completos de Cibersegurança, Programação, QA e Linux direto no telemóvel ou computador. Estude em qualquer lugar sem gastar saldo e sincronize seu progresso ao se reconectar.
+                            </p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <a href="#channels" class="btn btn-primary btn-lg shadow-sm">
+                                    <i class="fa fa-graduation-cap me-1"></i> Explorar Cursos
+                                </a>
+                                <a href="/slides/offline" class="btn btn-outline-light btn-lg">
+                                    <i class="fa fa-folder-open-o me-1"></i> Cursos Salvos no Aparelho
+                                </a>
+                                <a href="https://wa.me/5511930680941?text=Ol%C3%A1%2C+estou+acessando+a+plataforma+Evolars+Angola" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-lg">
+                                    <i class="fa fa-whatsapp me-1"></i> WhatsApp Oficial
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="card bg-dark bg-opacity-75 border border-secondary border-opacity-25 rounded-4 shadow-lg p-3 p-md-4 text-white">
+                                <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom border-secondary border-opacity-25">
+                                    <span class="fw-bold text-uppercase small text-muted"><i class="fa fa-shield text-primary me-1"></i> Nosso Diferencial</span>
+                                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1">Zero Consumo</span>
+                                </div>
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="evolars-feature-icon">
+                                            <i class="fa fa-mobile fa-2x text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 fw-bold">iPhone, Android e PC</h6>
+                                            <p class="small text-muted mb-0">Instale como aplicativo (PWA) direto do Safari ou Chrome com 1 toque.</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="evolars-feature-icon">
+                                            <i class="fa fa-file-archive-o fa-lg text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 fw-bold">Pacote Completo (.ZIP)</h6>
+                                            <p class="small text-muted mb-0">Baixe todas as apostilas em arquivo único para pendrive ou cartão de memória.</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="evolars-feature-icon">
+                                            <i class="fa fa-refresh fa-lg text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 fw-bold">Sincronização Automática</h6>
+                                            <p class="small text-muted mb-0">Marque lições como concluídas sem internet; o portal sincroniza ao reconectar.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </xpath>
+    </template>
+
+    <!-- 5. Banner Informativo em /slides/all -->
+    <template id="evolars_courses_all_banner" inherit_id="website_slides.courses_all" name="Evolars All Courses Offline Banner">
+        <xpath expr="//section[contains(@class, 's_banner')]" position="replace">
+            <section class="s_banner evolars-all-courses-banner py-4 text-white" data-snippet="s_banner">
+                <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <img src="/evolars_offline/static/src/img/logo_voz_no_papel_white.png" alt="Voz no Papel Editorial" style="max-height: 28px;"/>
+                            <span class="badge bg-primary text-uppercase" style="font-size: 10px;">Evolars Angola</span>
+                        </div>
+                        <h1 class="display-6 fw-bold mb-1">Catálogo de Cursos Técnicos</h1>
+                        <p class="text-light mb-0 small" style="opacity: 0.9;">
+                            Todos os cursos possuem suporte a download offline e pacote .ZIP para economizar seus dados móveis em Angola.
+                        </p>
+                    </div>
+                    <div>
+                        <a href="/slides/offline" class="btn btn-outline-light btn-sm">
+                            <i class="fa fa-folder-open-o me-1"></i> Acessar Cursos Salvos
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </xpath>
+    </template>
+
+    <!-- 6. Rodapé Oficial Evolars + Voz no Papel Editorial -->
+    <template id="evolars_footer_custom" inherit_id="website.layout" name="Evolars Angola Official Footer">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <div id="footer" class="oe_structure oe_structure_solo bg-dark text-white pt-5 pb-4 border-top border-secondary border-opacity-25">
+                <div class="container">
+                    <div class="row gy-4">
+                        <!-- Coluna 1: Logos e Parceria -->
+                        <div class="col-lg-5 col-md-6">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <img src="/evolars_offline/static/src/img/logo_voz_no_papel_white.png" alt="Voz no Papel Editorial" style="max-height: 40px; width: auto;"/>
+                            </div>
+                            <p class="text-secondary small mb-3 lh-sm" style="max-width: 420px;">
+                                Uma iniciativa conjunta da <strong>Evolars LTDA</strong> e da <strong>Voz no Papel Editorial</strong> para capacitação profissional, inclusão digital e ensino técnico de alta qualidade adaptado para a realidade de Angola.
+                            </p>
+                            <div class="small text-muted">
+                                <div><strong>Evolars LTDA</strong> • CNPJ: 62.014.621/0001-81</div>
+                                <div>Atendimento Internacional: São Paulo - SP (Brasil) • Luanda (Angola)</div>
+                            </div>
+                        </div>
+
+                        <!-- Coluna 2: Cursos e Modo Offline -->
+                        <div class="col-lg-3 col-md-6">
+                            <h6 class="text-uppercase fw-bold text-light mb-3" style="letter-spacing: 0.5px; font-size: 13px;">
+                                Aprendizado &amp; Offline
+                            </h6>
+                            <ul class="list-unstyled small d-flex flex-column gap-2 text-secondary">
+                                <li><a href="/slides" class="text-decoration-none text-secondary"><i class="fa fa-book me-1 text-primary"></i> Portal de Cursos</a></li>
+                                <li><a href="/slides/all" class="text-decoration-none text-secondary"><i class="fa fa-list me-1 text-primary"></i> Catálogo Completo</a></li>
+                                <li><a href="/slides/offline" class="text-decoration-none text-light fw-bold"><i class="fa fa-bolt me-1 text-warning"></i> Cursos Salvos (Modo Offline)</a></li>
+                                <li><a href="/slides/all/tag/ciberseguranca-6" class="text-decoration-none text-secondary"><i class="fa fa-shield me-1 text-primary"></i> Cibersegurança</a></li>
+                                <li><a href="/slides/all/tag/engenharia-de-software-5" class="text-decoration-none text-secondary"><i class="fa fa-code me-1 text-primary"></i> Engenharia de Software</a></li>
+                                <li><a href="/slides/all/tag/qa-automacao-de-testes-4" class="text-decoration-none text-secondary"><i class="fa fa-check-circle me-1 text-primary"></i> QA &amp; Testes</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Coluna 3: Contatos Oficiais Evolars -->
+                        <div class="col-lg-4 col-md-12">
+                            <h6 class="text-uppercase fw-bold text-light mb-3" style="letter-spacing: 0.5px; font-size: 13px;">
+                                Contatos &amp; Atendimento
+                            </h6>
+                            <ul class="list-unstyled small d-flex flex-column gap-2 text-secondary mb-3">
+                                <li class="d-flex align-items-center gap-2">
+                                    <i class="fa fa-whatsapp text-success fa-lg"></i>
+                                    <a href="https://wa.me/5511930680941?text=Ol%C3%A1%2C+gostaria+de+falar+com+a+Evolars+Angola" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none fw-bold">
+                                        +55 (11) 93068-0941
+                                    </a>
+                                </li>
+                                <li class="d-flex align-items-center gap-2">
+                                    <i class="fa fa-envelope text-primary fa-fw"></i>
+                                    <a href="mailto:angola@evolars.com.br" class="text-secondary text-decoration-none">
+                                        angola@evolars.com.br
+                                    </a>
+                                </li>
+                                <li class="d-flex align-items-center gap-2">
+                                    <i class="fa fa-envelope text-primary fa-fw"></i>
+                                    <a href="mailto:contato@evolars.com.br" class="text-secondary text-decoration-none">
+                                        contato@evolars.com.br
+                                    </a>
+                                </li>
+                                <li class="d-flex align-items-center gap-2">
+                                    <i class="fa fa-globe text-primary fa-fw"></i>
+                                    <a href="https://evolars.com.br" target="_blank" rel="noopener noreferrer" class="text-secondary text-decoration-none">
+                                        evolars.com.br
+                                    </a>
+                                    <span class="text-muted">•</span>
+                                    <a href="https://voznopapeleditorial.com.br" target="_blank" rel="noopener noreferrer" class="text-secondary text-decoration-none">
+                                        voznopapeleditorial.com.br
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="d-flex gap-2">
+                                <a href="https://wa.me/5511930680941?text=Ol%C3%A1%2C+gostaria+de+falar+com+a+Evolars+Angola" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success">
+                                    <i class="fa fa-whatsapp me-1"></i> WhatsApp Oficial
+                                </a>
+                                <a href="https://evolars.com.br" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fa fa-external-link me-1"></i> Evolars Institucional
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- 7. Copyright Oficial -->
+    <template id="evolars_footer_copyright" inherit_id="website.layout" name="Evolars Angola Copyright">
+        <xpath expr="//div[contains(@class, 'o_footer_copyright')]" position="replace">
+            <div class="o_footer_copyright py-3 bg-black text-secondary border-top border-secondary border-opacity-10" data-name="Copyright">
+                <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2 small">
+                    <div>
+                        <span>&#169; 2026 Evolars LTDA &amp; Voz no Papel Editorial. Todos os direitos reservados.</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="text-muted"><i class="fa fa-check-circle text-success me-1"></i>Plataforma Otimizada para Angola</span>
+                        <a href="https://wa.me/5511930680941" target="_blank" class="text-secondary text-decoration-none">Suporte</a>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- 8. Botão Flutuante de WhatsApp -->
+    <template id="evolars_whatsapp_floating_btn" inherit_id="website.layout" name="Evolars WhatsApp Floating Button">
+        <xpath expr="//body" position="inside">
+            <a href="https://wa.me/5511930680941?text=Ol%C3%A1%2C+estou+acessando+a+plataforma+Evolars+Angola"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="evolars-whatsapp-floating"
+               aria-label="Fale conosco no WhatsApp"
+               title="Falar com a Evolars no WhatsApp (+55 11 93068-0941)">
+                <i class="fa fa-whatsapp"></i>
+                <span class="d-none d-sm-inline ms-1">WhatsApp</span>
+            </a>
+        </xpath>
+    </template>
+
+    <!-- 9. Página Biblioteca de Cursos Salvos (/slides/offline) -->
     <template id="offline_library_template" name="Meus Cursos Salvos (Offline)">
         <t t-call="website.layout">
             <div id="wrap" class="container py-5">

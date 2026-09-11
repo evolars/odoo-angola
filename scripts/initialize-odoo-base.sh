@@ -150,31 +150,45 @@ else:
 
 company = env.ref("base.main_company", raise_if_not_found=False)
 if company:
-    company.name = "Evolars Angola"
+    company.name = "Evolars Angola & Voz no Papel"
     company.website = "https://angola.evolars.com.br"
     company.email = "angola@evolars.com.br"
-    logo_path = "/opt/odoo/custom/src/branding/evolars_logo_horizontal_dark.png"
+    company.phone = "+55 11 93068-0941"
+    company.mobile = "+55 11 93068-0941"
+    company.vat = "62.014.621/0001-81"
+    company.street = "São Paulo - SP / Atendimento Internacional Angola"
+    logo_path = "/opt/odoo/custom/src/branding/logo_voz_no_papel_dark.png"
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             logo_data = base64.b64encode(f.read())
             company.logo = logo_data
             if company.partner_id:
                 company.partner_id.image_1920 = logo_data
+                company.partner_id.phone = "+55 11 93068-0941"
+                company.partner_id.mobile = "+55 11 93068-0941"
+                company.partner_id.email = "angola@evolars.com.br"
+                company.partner_id.website = "https://angola.evolars.com.br"
+                company.partner_id.vat = "62.014.621/0001-81"
 
 website = env["website"].search([], limit=1)
 if website:
-    website.name = "Evolars Angola"
+    website.name = "Evolars Angola & Voz no Papel Editorial"
     website.domain = "https://angola.evolars.com.br"
     website.homepage_url = "/slides"
-    logo_path = "/opt/odoo/custom/src/branding/evolars_logo_horizontal_dark.png"
+    logo_path = "/opt/odoo/custom/src/branding/logo_voz_no_papel_dark.png"
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             website.logo = base64.b64encode(f.read())
-    favicon_path = "/opt/odoo/custom/src/branding/evolars-mark.png"
+    favicon_path = "/opt/odoo/custom/src/branding/logo_voz_no_papel_icon.png"
     if os.path.exists(favicon_path):
         with open(favicon_path, "rb") as f:
             website.write({"favicon": base64.b64encode(f.read())})
     website.cookies_bar = False
+    website.social_facebook = "https://facebook.com/evolars"
+    website.social_twitter = "https://twitter.com/evolars"
+    website.social_linkedin = "https://linkedin.com/company/evolars"
+    website.social_github = "https://github.com/evolars"
+    website.social_instagram = "https://instagram.com/evolars"
 
 env["ir.config_parameter"].set_param("web.base.url", "https://angola.evolars.com.br")
 env["ir.config_parameter"].set_param("web.base.url.freeze", "True")
